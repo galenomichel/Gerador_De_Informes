@@ -167,7 +167,7 @@
            const alertLink = doc.querySelector('.css-1r2hmw5.e1p7aara2')?.textContent || 'N/A';
 
            const creationDate = new Date(creationTime);
-           const currentDate = new Date();
+           const currentDate = new Date().toISOString().slice(0, 16).replace('T', ' ');
            const monitorTime = new Date(creationDate.getTime() + 4 * 60000);
 
            const formatDate = (date) => date.toLocaleString('pt-BR');
