@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Informes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #1e1b29; /* Roxo escuro */
+            color: white;
+            font-family: 'Arial', sans-serif;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .btn {
+            background-color: #4ade80; /* Verde */
+            color: #1e1b29; /* Roxo escuro */
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #34d399;
+        }
+        .btn:active {
+            background-color: black;
+            color: white;
+        }
+        .error {
+            color: #ef4444; /* Vermelho */
+            font-weight: bold;
+        }
+        .active {
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+        }
+        .arrow {
+            position: absolute;
+            left: -20px;
+            font-size: 1.5rem;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
