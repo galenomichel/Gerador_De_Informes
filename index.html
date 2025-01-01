@@ -36,11 +36,11 @@
             text-decoration-thickness: 2px;
         }
         .arrow {
+            pointer-events: none;
+            text-decoration: none;
             position: absolute;
-            left: -20px;
-            font-size: 1.5rem;
-            animation: blink 1s infinite;
-        }
+            transition: transform 0.2s ease;
+         }
         @keyframes blink {
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
@@ -106,6 +106,14 @@
        const companies = document.querySelectorAll('#companies span');
        let selectedClient = null;
        let activeIndex = 0;
+
+       const arrow = document.querySelector('.arrow');
+       document.addEventListener('keydown', (e) => {
+       const selectedCompany = document.querySelector('.company.selected');
+       if (selectedCompany) {
+         arrow.style.transform = `translateY(${selectedCompany.offsetTop}px)`;
+       }
+       });
 
        const alertInput = document.getElementById('alert-input');
        const log = document.getElementById('log');
