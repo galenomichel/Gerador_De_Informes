@@ -162,8 +162,8 @@
            const doc = parser.parseFromString(html, 'text/html');
 
            const alertId = document.querySelector('.css-1gd7hga').textContent.match(/#\d{4,}/)[0];
-           const alertTitle = doc.querySelector('.css-1y22fjq')?.textContent || 'N/A';
-           const creationTime = doc.querySelector('.css-1qyz15l.e14danaq0')?.textContent || 'N/A';
+           const alertTitle = document.querySelector('.alert-title').textContent.replace(/\[.*?\]/g, '').trim();
+           const creationTime = Array.from(document.querySelectorAll('.css-1qyz15l.e14danaq0')).find(el => el.textContent.trim().match(/\d{4}/)).textContent.trim();
            const alertLink = doc.querySelector('.css-1r2hmw5.e1p7aara2')?.textContent || 'N/A';
 
            const creationDate = new Date(creationTime);
