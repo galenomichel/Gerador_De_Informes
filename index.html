@@ -161,7 +161,7 @@
            const parser = new DOMParser();
            const doc = parser.parseFromString(html, 'text/html');
 
-           const alertId = doc.querySelector('.css-1gd7hga')?.textContent || 'N/A';
+           const alertId = document.querySelector('.css-1gd7hga').textContent.match(/#\d{4,}/)[0];
            const alertTitle = doc.querySelector('.css-1y22fjq')?.textContent || 'N/A';
            const creationTime = doc.querySelector('.css-1qyz15l.e14danaq0')?.textContent || 'N/A';
            const alertLink = doc.querySelector('.css-1r2hmw5.e1p7aara2')?.textContent || 'N/A';
