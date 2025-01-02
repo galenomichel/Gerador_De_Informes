@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,222 +8,264 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background-color: #1e1b29; /* Roxo escuro */
+            background-color: #1e1b29;
+            /* Roxo escuro */
             color: white;
             font-family: 'Arial', sans-serif;
             transition: opacity 0.3s ease-in-out;
         }
+
         .btn {
-            background-color: #4ade80; /* Verde */
-            color: #1e1b29; /* Roxo escuro */
+            background-color: #4ade80;
+            /* Verde */
+            color: #1e1b29;
+            /* Roxo escuro */
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
         }
+
         .btn:hover {
             background-color: #34d399;
         }
+
         .btn:active {
             background-color: black;
             color: white;
         }
+
         .error {
-            color: #ef4444; /* Vermelho */
+            color: #ef4444;
+            /* Vermelho */
             font-weight: bold;
         }
+
         .active {
             text-decoration: underline;
             text-decoration-thickness: 2px;
         }
+
         .arrow {
             pointer-events: none;
             text-decoration: none;
             position: absolute;
             transition: transform 0.2s ease;
-         }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
         }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
         .result-screen {
             max-width: 70%;
             font-size: 0.9rem;
             margin: 0 auto;
-         }
+        }
     </style>
 </head>
+
 <body class="flex flex-col items-center justify-center min-h-screen">
-   <img src="logo.png" alt="Logo da Empresa" class="w-32 mx-auto mb-4 fixed top-0">
-   <div id="app" class="text-center mt-20">
-       <div id="home-screen">
-           <h1 class="text-4xl font-bold mb-6">Gerador de Informes</h1>
-           <p class="text-lg mb-4">Selecione a empresa com as setas e pressione ENTER:</p>
-           <div id="companies" class="flex justify-center space-x-4 text-xl relative">
-               <span data-client="Atem-Ream" class="cursor-pointer active">
-                   <span class="arrow">&#8592;</span>
-                   Atem-Ream
-               </span>
-               <span data-client="Octalink" class="cursor-pointer">Octalink</span>
-               <span data-client="BrasilTecPar" class="cursor-pointer">BrasilTecPar</span>
-               <span data-client="FioTec" class="cursor-pointer">FioTec</span>
-               <span data-client="InterPag" class="cursor-pointer">InterPag</span>
-           </div>
-       </div>
+    <img src="logo.png" alt="Logo da Empresa" class="w-32 mx-auto mb-4 fixed top-0">
+    <div id="app" class="text-center mt-20">
+        <div id="home-screen">
+            <h1 class="text-4xl font-bold mb-6">Gerador de Informes</h1>
+            <p class="text-lg mb-4">Selecione a empresa com as setas e pressione ENTER:</p>
+            <div id="companies" class="flex justify-center space-x-4 text-xl relative">
+                <span data-client="Atem-Ream" class="cursor-pointer active">
+                    <span class="arrow">&#8592;</span>
+                    Atem-Ream
+                </span>
+                <span data-client="Octalink" class="cursor-pointer">Octalink</span>
+                <span data-client="BrasilTecPar" class="cursor-pointer">BrasilTecPar</span>
+                <span data-client="FioTec" class="cursor-pointer">FioTec</span>
+                <span data-client="InterPag" class="cursor-pointer">InterPag</span>
+            </div>
+        </div>
 
-       <div id="input-screen" class="hidden">
-           <h2 class="text-2xl font-semibold mb-4">Cole o código do alerta abaixo:</h2>
-           <textarea id="alert-input" class="w-2/3 h-40 p-4 text-black" placeholder="Cole o código da página do alerta aqui."></textarea>
-           <div class="mt-4">
-               <button class="btn" id="process-button">Processar</button>
-               <button class="btn" id="back-button">Voltar</button>
-           </div>
-           <div id="log" class="mt-4"></div>
-       </div>
+        <div id="input-screen" class="hidden">
+            <h2 class="text-2xl font-semibold mb-4">Cole o código do alerta abaixo:</h2>
+            <textarea id="alert-input" class="w-2/3 h-40 p-4 text-black"
+                placeholder="Cole o código da página do alerta aqui."></textarea>
+            <div class="mt-4">
+                <button class="btn" id="process-button">Processar</button>
+                <button class="btn" id="back-button">Voltar</button>
+            </div>
+            <div id="log" class="mt-4"></div>
+        </div>
 
-       <div id="result-screen" class="hidden">
-           <h2 class="text-2xl font-semibold mb-4">Textos Gerados</h2>
-           <div class="flex justify-between">
-               <div class="w-1/2 bg-gray-800 p-4 text-left text-white">
-                   <h3 class="font-bold">WhatsApp:</h3>
-                   <div id="whatsapp-text"></div>
-                   <button class="btn mt-2" id="copy-whatsapp">Copiar WhatsApp</button>
-               </div>
-               <div class="w-1/2 bg-gray-800 p-4 text-left text-white">
-                   <h3 class="font-bold">Passagem de Turno:</h3>
-                   <div id="handoff-text"></div>
-                   <button class="btn mt-2" id="copy-handoff">Copiar Passagem de Turno</button>
-               </div>
-           </div>
-           <button id="inicio-btn">Início</button>
-       </div>
-   </div>
+        <div id="result-screen" class="hidden">
+            <h2 class="text-2xl font-semibold mb-4">Textos Gerados</h2>
+            <div class="flex justify-between">
+                <div class="w-1/2 bg-gray-800 p-4 text-left text-white">
+                    <h3 class="font-bold">WhatsApp:</h3>
+                    <div id="whatsapp-text"></div>
+                    <button class="btn mt-2" id="copy-whatsapp">Copiar WhatsApp</button>
+                </div>
+                <div class="w-1/2 bg-gray-800 p-4 text-left text-white">
+                    <h3 class="font-bold">Passagem de Turno:</h3>
+                    <div id="handoff-text"></div>
+                    <button class="btn mt-2" id="copy-handoff">Copiar Passagem de Turno</button>
+                </div>
+            </div>
+            <button id="inicio-btn">Início</button>
+        </div>
+    </div>
 
-   <script>
-       const app = document.getElementById('app');
-       const homeScreen = document.getElementById('home-screen');
-       const inputScreen = document.getElementById('input-screen');
-       const resultScreen = document.getElementById('result-screen');
+    <script>
+        const app = document.getElementById('app');
+        const homeScreen = document.getElementById('home-screen');
+        const inputScreen = document.getElementById('input-screen');
+        const resultScreen = document.getElementById('result-screen');
 
-       const companies = document.querySelectorAll('#companies span');
-       let selectedClient = null;
-       let activeIndex = 0;
+        const companies = document.querySelectorAll('#companies span');
+        let selectedClient = null;
+        let activeIndex = 0;
 
-       const arrow = document.querySelector('.arrow');
-       document.addEventListener('keydown', (e) => {
-       const selectedCompany = document.querySelector('.company.selected');
-       if (selectedCompany) {
-         arrow.style.transform = `translateY(${selectedCompany.offsetTop}px)`;
-       }
-       });
+        const arrow = document.querySelector('.arrow');
+        document.addEventListener('keydown', (e) => {
+            const selectedCompany = document.querySelector('.company.selected');
+            if (selectedCompany) {
+                arrow.style.transform = `translateY(${selectedCompany.offsetTop}px)`;
+            }
+        });
 
-       const alertInput = document.getElementById('alert-input');
-       const log = document.getElementById('log');
+        const alertInput = document.getElementById('alert-input');
+        const log = document.getElementById('log');
 
-       const whatsappText = document.getElementById('whatsapp-text');
-       const handoffText = document.getElementById('handoff-text');
+        const whatsappText = document.getElementById('whatsapp-text');
+        const handoffText = document.getElementById('handoff-text');
 
-       function updateActiveCompany() {
-           companies.forEach((company, index) => {
-               company.classList.remove('active');
-               if (index === activeIndex) {
-                   company.classList.add('active');
-               }
-           });
-       }
+        function updateActiveCompany() {
+            companies.forEach((company, index) => {
+                company.classList.remove('active');
+                if (index === activeIndex) {
+                    company.classList.add('active');
+                }
+            });
+        }
 
-       document.addEventListener('keydown', (e) => {
-           if (homeScreen.classList.contains('hidden')) return;
+        document.addEventListener('keydown', (e) => {
+            if (homeScreen.classList.contains('hidden')) return;
 
-           if (e.key === 'ArrowRight') {
-               activeIndex = (activeIndex + 1) % companies.length;
-               updateActiveCompany();
-           } else if (e.key === 'ArrowLeft') {
-               activeIndex = (activeIndex - 1 + companies.length) % companies.length;
-               updateActiveCompany();
-           } else if (e.key === 'Enter') {
-               selectedClient = companies[activeIndex].getAttribute('data-client');
-               homeScreen.classList.add('hidden');
-               inputScreen.classList.remove('hidden');
-               alertInput.focus();
-           }
-       });
+            if (e.key === 'ArrowRight') {
+                activeIndex = (activeIndex + 1) % companies.length;
+                updateActiveCompany();
+            } else if (e.key === 'ArrowLeft') {
+                activeIndex = (activeIndex - 1 + companies.length) % companies.length;
+                updateActiveCompany();
+            } else if (e.key === 'Enter') {
+                selectedClient = companies[activeIndex].getAttribute('data-client');
+                homeScreen.classList.add('hidden');
+                inputScreen.classList.remove('hidden');
+                alertInput.focus();
+            }
+        });
 
-       companies.forEach((company) => {
-           company.addEventListener('click', () => {
-               selectedClient = company.getAttribute('data-client');
-               homeScreen.classList.add('hidden');
-               inputScreen.classList.remove('hidden');
-               alertInput.focus();
-           });
-       });
+        companies.forEach((company) => {
+            company.addEventListener('click', () => {
+                selectedClient = company.getAttribute('data-client');
+                homeScreen.classList.add('hidden');
+                inputScreen.classList.remove('hidden');
+                alertInput.focus();
+            });
+        });
 
-       document.getElementById('process-button').addEventListener('click', () => {
-           const htmlContent = alertInput.value.trim();
-           if (!htmlContent) {
-               log.innerHTML = '<p class="error">Hmmm, não encontrei tudo que precisava</p>';
-               return;
-           }
-           processAlert(htmlContent);
-       });
+        document.getElementById('process-button').addEventListener('click', () => {
+            const htmlContent = alertInput.value.trim();
+            if (!htmlContent) {
+                log.innerHTML = '<p class="error">Hmmm, não encontrei tudo que precisava</p>';
+                return;
+            }
+            processAlert(htmlContent);
+        });
 
-       function processAlert(html) {
-           const parser = new DOMParser();
-           const doc = parser.parseFromString(html, 'text/html');
+        function processAlert(html) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
 
-           const alertId = document.querySelector('.css-1gd7hga').textContent.match(/#\d{4,}/)[0];
-           const alertTitle = document.querySelector('.alert-title').textContent.replace(/\[.*?\]/g, '').trim();
-           const creationTime = Array.from(document.querySelectorAll('.css-1qyz15l.e14danaq0')).find(el => el.textContent.trim().match(/\d{4}/)).textContent.trim();
-           const alertLink = doc.querySelector('.css-1r2hmw5.e1p7aara2')?.textContent || 'N/A';
+            // Capturar o ID do alerta
+            const alertId = Array.from(doc.querySelectorAll('.css-1gd7hga'))
+                .find(el => el.textContent.trim().match(/^#\d{4,}$/))?.textContent.trim() || 'N/A';
 
-           const creationDate = new Date(creationTime);
-           const currentDate = new Date().toISOString().slice(0, 16).replace('T', ' ');
-           const monitorTime = new Date(creationDate.getTime() + 4 * 60000);
+            // Capturar o título do alerta
+            const alertTitle = doc.querySelector('[data-testid="alert-title"]')?.textContent.replace(/\[.*?\]/g, '').trim() || 'N/A';
 
-           const formatDate = (date) => date.toLocaleString('pt-BR');
+            // Capturar o horário de criação
+            const creationTime = Array.from(doc.querySelectorAll('.css-1qyz15l.e14danaq0'))
+                .find(el => el.textContent.trim().match(/\d{4}/))?.textContent.trim() || 'N/A';
 
-           whatsappText.innerHTML = `
-               Alerta: ${alertId}<br>
-               Descrição: ${alertTitle}<br>
-               Status: Aberto<br>
-               Início: ${creationTime}<br>
-               Acionamento TI: ${formatDate(currentDate)}<br><br>
-               Time Line:<br>
-               ${creationTime} - Identificado alerta.<br>
-               ${formatDate(monitorTime)} - Alerta em verificação pelo monitoramento.<br>
-               ${formatDate(currentDate)} - Acionamento time ${selectedClient}.<br><br>
-               Link do alerta: ${alertLink}
-           `;
+            // Capturar o link do alerta
+            const alertLink = doc.querySelector('.css-1r2hmw5.e1p7aara2')?.getAttribute('href') || 'N/A';
 
-           handoffText.innerHTML = `${selectedClient} - ${alertId} - ${alertTitle} - ${creationTime} - Via Whatsapp e e-mail.`;
+            const formatDateBR = (date) => {
+                return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) +
+                    ' às ' +
+                    date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            };
 
-           inputScreen.classList.add('hidden');
-           resultScreen.classList.remove('hidden');
-       }
+            const creationDate = new Date(creationTime);
+            const currentDate = new Date();
 
-       document.getElementById('copy-whatsapp').addEventListener('click', () => {
-           navigator.clipboard.writeText(whatsappText.innerText).then(() => {
-               alert('Texto do WhatsApp copiado!');
-           });
-       });
+            // Ajustar monitorTime
+            let monitorTime = new Date(creationDate.getTime() + 3 * 60000); // Somar 3 minutos
+            if (monitorTime > currentDate) {
+                monitorTime = new Date(currentDate.getTime() - 1 * 60000); // Ajustar para 1 minuto antes da hora atual
+            }
 
-       document.getElementById('copy-handoff').addEventListener('click', () => {
-           navigator.clipboard.writeText(handoffText.innerText).then(() => {
-               alert('Texto de Passagem de Turno copiado!');
-           });
-       });
+            // Uso dos horários formatados
+            whatsappText.innerHTML = `
+        Alerta: ${alertId}<br>
+        Descrição: ${alertTitle}<br>
+        Status: Aberto<br>
+        Início: ${formatDateBR(creationDate)}<br>
+        Acionamento TI: ${formatDateBR(currentDate)}<br><br>
+        Time Line:<br>
+        ${formatDateBR(creationDate)} - Identificado alerta.<br>
+        ${formatDateBR(monitorTime)} - Alerta em verificação pelo monitoramento.<br>
+        ${formatDateBR(currentDate)} - Acionamento time ${selectedClient}.<br><br>
+        Link do alerta: ${alertLink}
+    `;
+            handoffText.innerHTML = `${selectedClient} - ${alertId} - ${alertTitle} - ${formatDateBR(creationDate)} - Via Whatsapp e e-mail.`;
 
-       document.getElementById('back-button').addEventListener('click', () => {
-           inputScreen.classList.add('hidden');
-           homeScreen.classList.remove('hidden');
-           alertInput.value = '';
-       });
+            inputScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+        }
 
-       document.getElementById('reset-button').addEventListener('click', () => {
-           resultScreen.classList.add('hidden');
-           homeScreen.classList.remove('hidden');
-           alertInput.value = '';
-       });
-   </script>
+
+
+        document.getElementById('copy-whatsapp').addEventListener('click', () => {
+            navigator.clipboard.writeText(whatsappText.innerText).then(() => {
+                alert('Texto do WhatsApp copiado!');
+            });
+        });
+
+        document.getElementById('copy-handoff').addEventListener('click', () => {
+            navigator.clipboard.writeText(handoffText.innerText).then(() => {
+                alert('Texto de Passagem de Turno copiado!');
+            });
+        });
+
+        document.getElementById('back-button').addEventListener('click', () => {
+            inputScreen.classList.add('hidden');
+            homeScreen.classList.remove('hidden');
+            alertInput.value = '';
+        });
+
+        document.getElementById('reset-button').addEventListener('click', () => {
+            resultScreen.classList.add('hidden');
+            homeScreen.classList.remove('hidden');
+            alertInput.value = '';
+        });
+    </script>
 </body>
+
 </html>
