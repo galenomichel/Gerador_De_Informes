@@ -35,6 +35,21 @@
             color: white;
         }
 
+        #inicio-btn {
+            background-color: white;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: 2px solid #4ade80;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #inicio-btn:hover {
+            background-color: #4ade80;
+            color: white;
+        }
+
         .error {
             color: #ef4444;
             /* Vermelho */
@@ -196,15 +211,17 @@
             const alertId = Array.from(doc.querySelectorAll('.css-1gd7hga'))
                 .find(el => el.textContent.trim().match(/^#\d{4,}$/))?.textContent.trim() || 'N/A';
 
-            // Capturar o título do alerta
-            const alertTitle = doc.querySelector('[data-testid="alert-title"]')?.textContent.replace(/\[.*?\]/g, '').trim() || 'N/A';
+            // Capturar o título do alerta com termos específicos
+            const alertTitle = Array.from(doc.querySelectorAll('*'))
+                .map(el => el.textContent.trim())
+                .find(text => text.startsWith('[Datadog]') || text.startsWith('Problem:') || text.startsWith('[Grafana]')) || 'N/A';
 
             // Capturar o horário de criação
             const creationTime = Array.from(doc.querySelectorAll('.css-1qyz15l.e14danaq0'))
                 .find(el => el.textContent.trim().match(/\d{4}/))?.textContent.trim() || 'N/A';
 
             // Capturar o link do alerta
-            const alertLink = doc.querySelector('.css-1r2hmw5.e1p7aara2')?.getAttribute('href') || 'N/A';
+            const alertLink = doc.querySelector('.css-1r2hmw5.e1p7aara2')?.textContent || 'N/A';
 
             const formatDateBR = (date) => {
                 return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) +
@@ -221,7 +238,7 @@
                 monitorTime = new Date(currentDate.getTime() - 1 * 60000); // Ajustar para 1 minuto antes da hora atual
             }
 
-            // Uso dos horários formatados
+            // Geração dos textos padrão
             whatsappText.innerHTML = `
         Alerta: ${alertId}<br>
         Descrição: ${alertTitle}<br>
@@ -239,8 +256,6 @@
             inputScreen.classList.add('hidden');
             resultScreen.classList.remove('hidden');
         }
-
-
 
         document.getElementById('copy-whatsapp').addEventListener('click', () => {
             navigator.clipboard.writeText(whatsappText.innerText).then(() => {
@@ -260,11 +275,12 @@
             alertInput.value = '';
         });
 
-        document.getElementById('reset-button').addEventListener('click', () => {
+        document.getElementById('inicio-btn').addEventListener('click', () => {
             resultScreen.classList.add('hidden');
             homeScreen.classList.remove('hidden');
             alertInput.value = '';
         });
+
     </script>
 </body>
 
