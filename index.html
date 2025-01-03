@@ -5,13 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerador de Informes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Aptos+Narrow:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             background-color: #1e1b29;
             /* Roxo escuro */
             color: white;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Aptos Narrow', sans-serif;
             transition: opacity 0.3s ease-in-out;
         }
 
@@ -77,13 +78,13 @@
             width: 85%;
             font-size: 0.5rem;
             margin: 0 auto;
-            border-radius: 15px;
         }
 
         h1.sticky {
             padding-top: 10px;
             padding-bottom: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 2px 10px #4ade80;
+            border-radius: 30px;
         }
 
         img {
@@ -108,10 +109,10 @@
 </head>
 
 <body class="flex flex-col items-center justify-center min-h-screen">
-    <img src="logo.png" alt="BW SOLUÇÕES" class="w-32 mx-auto mb-4">
+    <img src="logo.svg" alt="BW SOLUÇÕES" class="w-32 mx-auto mb-4">
     <div id="app" class="text-center mt-20">
         <div id="home-screen">
-            <h1 class="text-4xl font-bold mb-6 sticky top-0 bg-[#1e1b29] z-10">Gerador de Informes</h1>
+            <h1 id="title" class="text-4xl font-bold mb-6 sticky top-0 bg-[#1e1b29] z-10">Gerador de Informes</h1>
             <p class="text-lg mb-4">Selecione o cliente com as setas do teclado (← →) e pressione ENTER ↵:</p>
             <div id="companies" class="flex justify-center space-x-4 text-xl relative">
                 <span data-client="Atem-Ream">Atem-Ream</span>
@@ -124,8 +125,8 @@
 
         <div id="input-screen" class="hidden">
             <h2 class="text-2xl font-semibold mb-4">Cole o código do alerta abaixo:</h2>
-            <textarea id="alert-input" class="w-5/6 h-60 p-4 bg-black text-gray-400 text-sm"
-                placeholder="Cole o código-fonte do alerta aqui."></textarea>
+            <textarea id="alert-input" class="w-5/6 h-60 p-4 bg-gray-800 text-gray-400 text-sm"
+                placeholder="Código-fonte HTML do alerta aqui."></textarea>
             <div class="mt-4 flex justify-between w-5/6 mx-auto">
                 <button class="btn" id="back-button">Voltar</button>
                 <button class="btn" id="process-button">Processar</button>
@@ -135,7 +136,7 @@
 
         <div id="result-screen" class="hidden">
             <h2 class="text-2xl font-semibold mb-4">Textos Gerados</h2>
-            <div class="grid grid-cols-1 gap-4">
+            <div id="" class="grid grid-cols-1 gap-4">
                 <div class="bg-gray-800 p-4 text-left text-white">
                     <h3 class="font-bold text-center">WhatsApp:</h3>
                     <div id="whatsapp-text"></div>
