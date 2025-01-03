@@ -104,7 +104,10 @@
         textarea {
             border: 0px;
             border-radius: 15px;
+            font-size: 5px;
+            padding: 10px;
         }
+
     </style>
 </head>
 
@@ -125,8 +128,8 @@
 
         <div id="input-screen" class="hidden">
             <h2 class="text-2xl font-semibold mb-4">Cole o código do alerta abaixo:</h2>
-            <textarea id="alert-input" class="w-5/6 h-60 p-4 bg-gray-800 text-gray-400 text-sm"
-                placeholder="Código-fonte HTML do alerta aqui."></textarea>
+            <textarea id="alert-input" class="w-4/6 md:w-5/6 h-60 p-4 bg-gray-800 text-gray-400 text-sm"
+    placeholder="Código-fonte HTML do alerta aqui."></textarea>
             <div class="mt-4 flex justify-between w-5/6 mx-auto">
                 <button class="btn" id="back-button">Voltar</button>
                 <button class="btn" id="process-button">Processar</button>
@@ -177,6 +180,10 @@
             });
         }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            // Focar automaticamente no campo de input ao carregar a tela
+            homeScreen.classList.focus();
+        });
         document.addEventListener('keydown', (e) => {
             if (homeScreen.classList.contains('hidden')) return;
 
