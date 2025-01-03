@@ -74,9 +74,10 @@
         }
 
         .result-screen {
-            max-width: 70%;
-            font-size: 0.9rem;
+            width: 85%;
+            font-size: 0.5rem;
             margin: 0 auto;
+            border-radius: 15px;
         }
 
         h1.sticky {
@@ -100,8 +101,8 @@
         }
 
         textarea {
-            border: 1px solid #4ade80;
-            border-radius: 5px;
+            border: 0px;
+            border-radius: 15px;
         }
     </style>
 </head>
@@ -125,25 +126,25 @@
             <h2 class="text-2xl font-semibold mb-4">Cole o código do alerta abaixo:</h2>
             <textarea id="alert-input" class="w-5/6 h-60 p-4 bg-black text-gray-400 text-sm"
                 placeholder="Cole o código-fonte do alerta aqui."></textarea>
-            <div class="mt-4">
-                <button class="btn" id="process-button">Processar</button>
+            <div class="mt-4 flex justify-between w-5/6 mx-auto">
                 <button class="btn" id="back-button">Voltar</button>
+                <button class="btn" id="process-button">Processar</button>
             </div>
             <div id="log" class="mt-4"></div>
         </div>
 
         <div id="result-screen" class="hidden">
             <h2 class="text-2xl font-semibold mb-4">Textos Gerados</h2>
-            <div class="flex justify-between">
-                <div class="w-1/2 bg-gray-800 p-4 text-left text-white">
-                    <h3 class="font-bold">WhatsApp:</h3>
+            <div class="grid grid-cols-1 gap-4">
+                <div class="bg-gray-800 p-4 text-left text-white">
+                    <h3 class="font-bold text-center">WhatsApp:</h3>
                     <div id="whatsapp-text"></div>
-                    <button class="btn mt-2" id="copy-whatsapp">Copiar WhatsApp</button>
+                    <button class="btn mt-4 mx-auto block" id="copy-whatsapp">Copiar WhatsApp</button>
                 </div>
-                <div class="w-1/2 bg-gray-800 p-4 text-left text-white">
-                    <h3 class="font-bold">Passagem de Turno:</h3>
+                <div class="bg-gray-800 p-4 text-left text-white">
+                    <h3 class="font-bold text-center">Passagem de Turno:</h3>
                     <div id="handoff-text"></div>
-                    <button class="btn mt-2" id="copy-handoff">Copiar Passagem de Turno</button>
+                    <button class="btn mt-4 mx-auto block" id="copy-handoff">Copiar Passagem de Turno</button>
                 </div>
             </div>
             <button id="inicio-btn">Início</button>
@@ -186,8 +187,7 @@
                 updateActiveCompany();
             } else if (e.key === 'Enter') {
                 selectedClient = companies[activeIndex].getAttribute('data-client');
-                homeScreen.classList.add('hidden');
-                inputScreen.classList.remove('hidden');
+                fadeTransition(homeScreen, inputScreen);
                 alertInput.focus();
             }
         });
@@ -195,8 +195,7 @@
         companies.forEach((company) => {
             company.addEventListener('click', () => {
                 selectedClient = company.getAttribute('data-client');
-                homeScreen.classList.add('hidden');
-                inputScreen.classList.remove('hidden');
+                fadeTransition(homeScreen, inputScreen);
                 alertInput.focus();
             });
         });
@@ -207,17 +206,28 @@
                 log.innerHTML = '<p class="error">Hmmm, não encontrei tudo que precisava</p>';
                 return;
             }
+            fadeTransition(inputScreen, resultScreen);
             processAlert(htmlContent);
         });
+
         function fadeTransition(hideScreen, showScreen) {
+            // Adiciona a classe fade-out à tela atual
             hideScreen.classList.add('fade-out');
+
+            // Espera o tempo da transição para esconder completamente
             setTimeout(() => {
-                hideScreen.classList.add('hidden');
-                hideScreen.classList.remove('fade-out');
+                hideScreen.classList.add('hidden'); // Esconde a tela
+                hideScreen.classList.remove('fade-out'); // Remove a classe fade-out
+
+                // Mostra a nova tela com a classe fade-in
                 showScreen.classList.remove('hidden');
                 showScreen.classList.add('fade-in');
-                setTimeout(() => showScreen.classList.remove('fade-in'), 300);
-            }, 300);
+
+                // Remove a classe fade-in após a transição
+                setTimeout(() => {
+                    showScreen.classList.remove('fade-in');
+                }, 300); // Tempo da transição definido no CSS
+            }, 300); // Tempo da transição definido no CSS
         }
 
         function processAlert(html) {
@@ -271,9 +281,7 @@
         Link do alerta: ${alertLink}
     `;
             handoffText.innerHTML = `${selectedClient} - ${alertId} - ${alertTitle} - ${formatDateBR(creationDate)} - Via Whatsapp e e-mail.`;
-
-            inputScreen.classList.add('hidden');
-            resultScreen.classList.remove('hidden');
+            fadeTransition(inputScreen, resultScreen);
         }
 
         document.getElementById('copy-whatsapp').addEventListener('click', () => {
@@ -289,17 +297,14 @@
         });
 
         document.getElementById('back-button').addEventListener('click', () => {
-            inputScreen.classList.add('hidden');
-            homeScreen.classList.remove('hidden');
+            fadeTransition(inputScreen, homeScreen);
             alertInput.value = '';
         });
 
         document.getElementById('inicio-btn').addEventListener('click', () => {
-            resultScreen.classList.add('hidden');
-            homeScreen.classList.remove('hidden');
+            fadeTransition(resultScreen, homeScreen);
             alertInput.value = '';
         });
-
     </script>
 </body>
 
