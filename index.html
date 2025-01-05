@@ -107,7 +107,6 @@
             font-size: 5px;
             padding: 10px;
         }
-
     </style>
 </head>
 
@@ -129,7 +128,7 @@
         <div id="input-screen" class="hidden">
             <h2 class="text-2xl font-semibold mb-4">Cole o código do alerta abaixo:</h2>
             <textarea id="alert-input" class="w-4/6 md:w-5/6 h-60 p-4 bg-gray-800 text-gray-400 text-sm"
-    placeholder="Código-fonte HTML do alerta aqui."></textarea>
+                placeholder="Código-fonte HTML do alerta aqui."></textarea>
             <div class="mt-4 flex justify-between w-5/6 mx-auto">
                 <button class="btn" id="back-button">Voltar</button>
                 <button class="btn" id="process-button">Processar</button>
@@ -139,15 +138,15 @@
 
         <div id="result-screen" class="hidden">
             <h2 class="text-2xl font-semibold mb-4">Textos Gerados</h2>
-            <div id="" class="grid grid-cols-1 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-gray-800 p-4 text-left text-white">
                     <h3 class="font-bold text-center">WhatsApp:</h3>
-                    <div id="whatsapp-text"></div>
+                    <div id="whatsapp-text" class="text-xs"></div>
                     <button class="btn mt-4 mx-auto block" id="copy-whatsapp">Copiar WhatsApp</button>
                 </div>
                 <div class="bg-gray-800 p-4 text-left text-white">
                     <h3 class="font-bold text-center">Passagem de Turno:</h3>
-                    <div id="handoff-text"></div>
+                    <div id="handoff-text" class="text-xs"></div>
                     <button class="btn mt-4 mx-auto block" id="copy-handoff">Copiar Passagem de Turno</button>
                 </div>
             </div>
@@ -170,6 +169,18 @@
 
         const whatsappText = document.getElementById('whatsapp-text');
         const handoffText = document.getElementById('handoff-text');
+        const copyButtonHandler = (button, textToCopy) => {
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                button.style.backgroundColor = 'black';
+                button.style.color = 'white';
+                button.innerText = 'Copiado!';
+                setTimeout(() => {
+                    button.style.backgroundColor = '#4ade80';
+                    button.style.color = '#1e1b29';
+                    button.innerText = 'Copiar';
+                }, 2000); // Volta ao estado original após 2 segundos
+            });
+        };
 
         function updateActiveCompany() {
             companies.forEach((company, index) => {
@@ -293,15 +304,11 @@
         }
 
         document.getElementById('copy-whatsapp').addEventListener('click', () => {
-            navigator.clipboard.writeText(whatsappText.innerText).then(() => {
-                alert('Texto do WhatsApp copiado!');
-            });
+            copyButtonHandler(document.getElementById('copy-whatsapp'), whatsappText.innerText);
         });
 
         document.getElementById('copy-handoff').addEventListener('click', () => {
-            navigator.clipboard.writeText(handoffText.innerText).then(() => {
-                alert('Texto de Passagem de Turno copiado!');
-            });
+            copyButtonHandler(document.getElementById('copy-handoff'), handoffText.innerText);
         });
 
         document.getElementById('back-button').addEventListener('click', () => {
