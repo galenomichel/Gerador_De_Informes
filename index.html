@@ -146,14 +146,15 @@
     <script>
         const app = document.getElementById('app');
         const homeScreen = document.getElementById('home-screen');
-        const inputArea = document.getElementById('alert-input');
+        const inputScreen = document.getElementById('input-screen');
+        const alertInput = document.getElementById('alert-input'); 
         const resultScreen = document.getElementById('result-screen');
 
         const companies = document.querySelectorAll('#companies span');
         let selectedClient = null;
         let activeIndex = 0;
 
-        const alertInput = document.getElementById('alert-input');
+        //const alertInput = document.getElementById('alert-input');
         const log = document.getElementById('log');
 
         const whatsappText = document.getElementById('whatsapp-text');
@@ -173,23 +174,7 @@
 
         // Focar automaticamente no campo de input ao carregar a tela
         document.addEventListener('DOMContentLoaded', () => {
-            inputArea.focus();
-        });
-        
-        document.addEventListener('keydown', (e) => {
-            if (homeScreen.classList.contains('hidden')) return;
-
-            if (e.key === 'ArrowRight') {
-                activeIndex = (activeIndex + 1) % companies.length;
-                updateActiveCompany();
-            } else if (e.key === 'ArrowLeft') {
-                activeIndex = (activeIndex - 1 + companies.length) % companies.length;
-                updateActiveCompany();
-            } else if (e.key === 'Enter') {
-                selectedClient = companies[activeIndex].getAttribute('data-client');
-                fadeTransition(homeScreen, inputScreen);
-                alertInput.focus();
-            }
+            alertInput.focus();
         });
 
         document.getElementById('process-button').addEventListener('click', () => {
@@ -307,16 +292,10 @@
             copyButtonHandler(document.getElementById('copy-handoff'), handoffText.innerText);
         });
 
-        document.getElementById('back-button').addEventListener('click', () => {
-            fadeTransition(inputScreen, homeScreen);
-            alertInput.value = '';
-        });
-
         document.getElementById('inicio-btn').addEventListener('click', () => {
             alertInput.value = '';
             fadeTransition(resultScreen, inputScreen);
         });
     </script>
 </body>
-
 </html>
