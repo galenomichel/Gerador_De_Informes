@@ -266,6 +266,8 @@
 
             if (selectedClient === "Grafana Interpag") {
                 selectedClient = "Interpag";
+            } else if (selectedClient === "Octalink") {
+                selectedClient = "BW Soluções";
             }
 
             const formatDateBR = (date) => {
@@ -296,7 +298,14 @@
         ${formatDateBR(currentDate)} - Acionamento time ${selectedClient}.<br><br>
         Link do alerta: ${alertLink}
     `;
-            handoffText.innerHTML = `${selectedClient} - ${alertId} - ${alertTitle} - ${formatDateBR(creationDate)} - Via Whatsapp e e-mail.`;
+            let deliveryMethod = "Via Whatsapp e e-mail";
+            if (selectedClient === "Fiotec") {
+                deliveryMethod = "Via Whatsapp";
+            } else if (selectedClient === "Octalink") {
+                deliveryMethod = "Via Teams";
+            } 
+
+            handoffText.innerHTML = `${selectedClient} - ${alertId} - ${alertTitle} - ${formatDateBR(creationDate)} - ${deliveryMethod}.`;
             fadeTransition(inputScreen, resultScreen);
         }
 
