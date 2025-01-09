@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -17,10 +17,8 @@
         }
 
         .btn {
-            background-color: #4ade80;
-            /* Verde */
-            color: #1e1b29;
-            /* Roxo escuro */
+            background-color: #4ade80;/* Verde */
+            color: #1e1b29; /* Roxo escuro */
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
@@ -148,7 +146,7 @@
     <script>
         const app = document.getElementById('app');
         const homeScreen = document.getElementById('home-screen');
-        const inputScreen = document.getElementById('input-screen');
+        const inputArea = document.getElementById('alert-input');
         const resultScreen = document.getElementById('result-screen');
 
         const companies = document.querySelectorAll('#companies span');
@@ -168,23 +166,14 @@
                 setTimeout(() => {
                     button.style.backgroundColor = '#4ade80';
                     button.style.color = '#1e1b29';
-                    button.innerText = 'Copiar';
+                    button.innerText = 'Copiar novamente';
                 }, 2000); // Volta ao estado original após 2 segundos
             });
         };
 
-        function updateActiveCompany() {
-            companies.forEach((company, index) => {
-                company.classList.remove('active');
-                if (index === activeIndex) {
-                    company.classList.add('active');
-                }
-            });
-        }
-
+        // Focar automaticamente no campo de input ao carregar a tela
         document.addEventListener('DOMContentLoaded', () => {
-            // Focar automaticamente no campo de input ao carregar a tela
-            inputScreen.classList.focus();
+            inputArea.focus();
         });
         
         document.addEventListener('keydown', (e) => {
@@ -299,10 +288,11 @@
         Link do alerta: ${alertLink}
     `;
             let deliveryMethod = "Via Whatsapp e e-mail";
-            if (selectedClient === "Fiotec") {
+            if (selectedClient === "FioTec") {
                 deliveryMethod = "Via Whatsapp";
-            } else if (selectedClient === "Octalink") {
+            } else if (selectedClient === "BW Soluções") {
                 deliveryMethod = "Via Teams";
+                selectedClient = "Octalink";
             } 
 
             handoffText.innerHTML = `${selectedClient} - ${alertId} - ${alertTitle} - ${formatDateBR(creationDate)} - ${deliveryMethod}.`;
