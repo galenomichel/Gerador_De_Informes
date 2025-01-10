@@ -17,8 +17,10 @@
         }
 
         .btn {
-            background-color: #4ade80;/* Verde */
-            color: #1e1b29; /* Roxo escuro */
+            background-color: #4ade80;
+            /* Verde */
+            color: #1e1b29;
+            /* Roxo escuro */
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
@@ -127,6 +129,42 @@
 
         <div id="result-screen" class="hidden">
             <h2 class="text-2xl font-semibold mb-4">Textos Gerados</h2>
+            <!-- Campos adicionais para Interpag -->
+            <div id="interpag-fields" class="hidden">
+                <label>
+                    Incidente:
+                    <input type="text" id="incident-field" class="w-full p-2 mb-2 text-black"
+                        placeholder="Preencher à mão">
+                </label>
+                <label>
+                    Causa:
+                    <select id="cause-selector" class="w-full p-2 mb-2 text-black">
+                        <option value="Em análise.">Em análise.</option>
+                        <option value="custom">Escreva aqui</option>
+                    </select>
+                    <input type="text" id="cause-field" class="hidden w-full p-2 mt-1 text-black"
+                        placeholder="Preencher à mão">
+                </label>
+                <label>
+                    Impacto:
+                    <select id="impact-selector" class="w-full p-2 mb-2 text-black">
+                        <option value="Em análise.">Em análise.</option>
+                        <option value="custom">Escreva aqui</option>
+                    </select>
+                    <input type="text" id="impact-field" class="hidden w-full p-2 mt-1 text-black"
+                        placeholder="Preencher à mão">
+                </label>
+                <label>
+                    Acionamento:
+                    <input type="text" id="action-field" class="w-full p-2 mb-2 text-black"
+                        placeholder="Preencher à mão">
+                </label>
+                <label>
+                    Passagem:
+                    <input type="text" id="handoff-field" class="w-full p-2 mb-2 text-black"
+                        placeholder="Preencher à mão">
+                </label>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-gray-800 p-4 text-left text-white">
                     <h3 class="font-bold text-center">WhatsApp:</h3>
@@ -147,14 +185,13 @@
         const app = document.getElementById('app');
         const homeScreen = document.getElementById('home-screen');
         const inputScreen = document.getElementById('input-screen');
-        const alertInput = document.getElementById('alert-input'); 
+        const alertInput = document.getElementById('alert-input');
         const resultScreen = document.getElementById('result-screen');
 
         const companies = document.querySelectorAll('#companies span');
         let selectedClient = null;
         let activeIndex = 0;
 
-        //const alertInput = document.getElementById('alert-input');
         const log = document.getElementById('log');
 
         const whatsappText = document.getElementById('whatsapp-text');
@@ -180,21 +217,21 @@
         document.getElementById('process-button').addEventListener('click', () => {
             const htmlContent = alertInput.value.trim();
             if (!htmlContent) {
-                log.innerHTML = '<p class="error">Hmmm, não encontrei tudo que precisava</p>';
+                log.innerHTML = '<p class="error">Hmmm, isso não me parece ser o código fonte do alerta.</p>';
                 return;
             }
             fadeTransition(inputScreen, resultScreen);
             processAlert(htmlContent);
         });
 
+        // Substitui ":" por "h"
         function formatTimeToBR(time) {
-                return time.replace(/(\d{2}):(\d{2})/, "$1h$2"); // Substitui ":" por "h"
+            return time.replace(/(\d{2}):(\d{2})/, "$1h$2");
         }
 
+        // Adiciona a classe fade-out à tela atual
         function fadeTransition(hideScreen, showScreen) {
-            // Adiciona a classe fade-out à tela atual
             hideScreen.classList.add('fade-out');
-
             // Espera o tempo da transição para esconder completamente
             setTimeout(() => {
                 hideScreen.classList.add('hidden'); // Esconde a tela
@@ -234,14 +271,20 @@
 
             // Obter nome do cliente
             const clientClasses = Array.from(doc.querySelectorAll('.css-1qyz15l.e14danaq0'));
-            const keywords = ["FioTec", "BrasilTecpar", "ATEM", "Octalink", "Grafana Interpag"];
+            const keywords = ["FioTec", "BrasilTecpar", "ATEM", "Octalink", "Grafana Interpag", "Zabbix"];
             selectedClient = clientClasses.map(el => el.textContent.trim())
                 .find(text => keywords.some(keyword => text.includes(keyword)));
 
-            if (selectedClient === "Grafana Interpag") {
+            if (selectedClient === "Grafana Interpag" || "Zabbix") {
                 selectedClient = "Interpag";
             } else if (selectedClient === "Octalink") {
                 selectedClient = "BW Soluções";
+            }
+
+            if (selectedClient === "Interpag") {
+                document.getElementById('interpag-fields').classList.remove('hidden');
+            } else {
+                document.getElementById('interpag-fields').classList.add('hidden');
             }
 
             const formatDateBR = (date) => {
@@ -259,8 +302,33 @@
                 monitorTime = new Date(currentDate.getTime() - 1 * 60000); // Ajustar para 1 minuto antes da hora atual
             }
 
-            // Geração dos textos padrão
-            whatsappText.innerHTML = `
+            if (selectedClient === "Interpag") {
+                const incident = document.getElementById('incident-field').value || 'N/A';
+                const cause = document.getElementById('cause-selector').value === 'custom'
+                    ? document.getElementById('cause-field').value
+                    : document.getElementById('cause-selector').value;
+                const impact = document.getElementById('impact-selector').value === 'custom'
+                    ? document.getElementById('impact-field').value
+                    : document.getElementById('impact-selector').value;
+                const action = document.getElementById('action-field').value || '...';
+                const handoff = document.getElementById('handoff-field').value || '...';
+
+                whatsappText.innerHTML = `
+        Incidente: ${incident}<br>
+        Descrição: ${alertTitle}<br>
+        Status: Aberto<br>
+        Início: ${formatDateBR(creationDate)}<br>
+        Acionamento TI: ${formatDateBR(currentDate)}<br>
+        Causa: ${cause}<br>
+        Impacto: ${impact}<br><br>
+        Time Line:<br>
+        ${formatDateBR(creationDate)} - Identificado alerta.<br>
+        ${formatDateBR(currentDate)} - Acionado ${action}.<br>
+    `;
+                handoffText.innerHTML = `${selectedClient} - ${alertId} - ${alertTitle} - ${formatDateBR(creationDate)} - ${handoff}`;
+            } else {
+                // Geração dos textos padrão
+                whatsappText.innerHTML = `
         Alerta: ${alertId}<br>
         Descrição: ${alertTitle}<br>
         Status: Aberto<br>
@@ -272,16 +340,17 @@
         ${formatDateBR(currentDate)} - Acionamento time ${selectedClient}.<br><br>
         Link do alerta: ${alertLink}
     `;
-            let deliveryMethod = "Via Whatsapp e e-mail";
-            if (selectedClient === "FioTec") {
-                deliveryMethod = "Via Whatsapp";
-            } else if (selectedClient === "BW Soluções") {
-                deliveryMethod = "Via Teams";
-                selectedClient = "Octalink";
-            } 
+                let deliveryMethod = "Via Whatsapp e e-mail";
+                if (selectedClient === "FioTec") {
+                    deliveryMethod = "Via Whatsapp";
+                } else if (selectedClient === "BW Soluções") {
+                    deliveryMethod = "Via Teams";
+                    selectedClient = "Octalink";
+                }
 
-            handoffText.innerHTML = `${selectedClient} - ${alertId} - ${alertTitle} - ${formatDateBR(creationDate)} - ${deliveryMethod}.`;
-            fadeTransition(inputScreen, resultScreen);
+                handoffText.innerHTML = `${selectedClient} - ${alertId} - ${alertTitle} - ${formatDateBR(creationDate)} - ${deliveryMethod}.`;
+                fadeTransition(inputScreen, resultScreen);
+            }
         }
 
         document.getElementById('copy-whatsapp').addEventListener('click', () => {
@@ -296,6 +365,26 @@
             alertInput.value = '';
             fadeTransition(resultScreen, inputScreen);
         });
+        document.getElementById('cause-selector').addEventListener('change', (e) => {
+            const causeField = document.getElementById('cause-field');
+            if (e.target.value === 'custom') {
+                causeField.classList.remove('hidden');
+            } else {
+                causeField.classList.add('hidden');
+                causeField.value = ''; // Limpa o campo de texto
+            }
+        });
+
+        document.getElementById('impact-selector').addEventListener('change', (e) => {
+            const impactField = document.getElementById('impact-field');
+            if (e.target.value === 'custom') {
+                impactField.classList.remove('hidden');
+            } else {
+                impactField.classList.add('hidden');
+                impactField.value = ''; // Limpa o campo de texto
+            }
+        });
     </script>
 </body>
+
 </html>
