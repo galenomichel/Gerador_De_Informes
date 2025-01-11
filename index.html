@@ -187,15 +187,16 @@
         const inputScreen = document.getElementById('input-screen');
         const alertInput = document.getElementById('alert-input');
         const resultScreen = document.getElementById('result-screen');
-
-        const companies = document.querySelectorAll('#companies span');
         let selectedClient = null;
-        let activeIndex = 0;
-
         const log = document.getElementById('log');
-
         const whatsappText = document.getElementById('whatsapp-text');
         const handoffText = document.getElementById('handoff-text');
+
+        let globalAlertId = '';
+        let globalAlertTitle = '';
+        let globalCreationDate = null;
+        let globalAlertLink = '';
+
         const copyButtonHandler = (button, textToCopy) => {
             navigator.clipboard.writeText(textToCopy).then(() => {
                 button.style.backgroundColor = 'black';
@@ -214,6 +215,12 @@
             alertInput.focus();
         });
 
+        const formatDateBR = (date) => {
+                return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) +
+                    ' às ' +
+                    formatTimeToBR(date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
+        };
+        
         document.getElementById('process-button').addEventListener('click', () => {
             const htmlContent = alertInput.value.trim();
             if (!htmlContent) {
@@ -256,7 +263,7 @@
             const alertId = Array.from(doc.querySelectorAll('.css-1gd7hga'))
                 .find(el => el.textContent.trim().match(/^#\d{4,}$/))?.textContent.trim() || 'N/A';
 
-            // Capturar o título do alerta com termos específicos
+            // Capturar o título do alerta
             const alertTitle = Array.from(doc.querySelectorAll('*'))
                 .map(el => el.textContent.trim())
                 .find(text => text.startsWith('[Datadog]') || text.startsWith('Problem:') || text.startsWith('[Grafana]'))
@@ -269,29 +276,30 @@
             // Capturar o link do alerta
             const alertLink = doc.querySelector('.css-1r2hmw5.e1p7aara2')?.textContent || 'N/A';
 
-            // Obter nome do cliente
+            globalAlertId = alertId;
+            globalAlertTitle = alertTitle;
+            globalCreationDate = new Date(creationTime);
+            globalAlertLink = alertLink;
+
+            // Identificar cliente
             const clientClasses = Array.from(doc.querySelectorAll('.css-1qyz15l.e14danaq0'));
             const keywords = ["FioTec", "BrasilTecpar", "ATEM", "Octalink", "Grafana Interpag", "Zabbix"];
             selectedClient = clientClasses.map(el => el.textContent.trim())
                 .find(text => keywords.some(keyword => text.includes(keyword)));
 
-            if (selectedClient === "Grafana Interpag" || "Zabbix") {
+            if (selectedClient === "Grafana Interpag" || selectedClient === "Zabbix") {
                 selectedClient = "Interpag";
             } else if (selectedClient === "Octalink") {
                 selectedClient = "BW Soluções";
             }
 
+            // Configurar campos para Interpag
             if (selectedClient === "Interpag") {
                 document.getElementById('interpag-fields').classList.remove('hidden');
+                updateInterpagTexts();
             } else {
                 document.getElementById('interpag-fields').classList.add('hidden');
             }
-
-            const formatDateBR = (date) => {
-                return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) +
-                    ' às ' +
-                    formatTimeToBR(date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
-            };
 
             const creationDate = new Date(creationTime);
             const currentDate = new Date();
@@ -314,32 +322,19 @@
                 const handoff = document.getElementById('handoff-field').value || '...';
 
                 whatsappText.innerHTML = `
-        Incidente: ${incident}<br>
-        Descrição: ${alertTitle}<br>
-        Status: Aberto<br>
-        Início: ${formatDateBR(creationDate)}<br>
-        Acionamento TI: ${formatDateBR(currentDate)}<br>
-        Causa: ${cause}<br>
-        Impacto: ${impact}<br><br>
-        Time Line:<br>
-        ${formatDateBR(creationDate)} - Identificado alerta.<br>
-        ${formatDateBR(currentDate)} - Acionado ${action}.<br>
-    `;
-                handoffText.innerHTML = `${selectedClient} - ${alertId} - ${alertTitle} - ${formatDateBR(creationDate)} - ${handoff}`;
+            Incidente: ${incident}<br>
+            Descrição: ${alertTitle}<br>
+            Status: Aberto<br>
+            Início: ${formatDateBR(creationDate)}<br>
+            Acionamento TI: ${formatDateBR(currentDate)}<br>
+            Causa: ${cause}<br>
+            Impacto: ${impact}<br><br>
+            Time Line:<br>
+            ${formatDateBR(creationDate)} - Identificado alerta.<br>
+            ${formatDateBR(currentDate)} - Acionado ${action}.<br>
+        `;
+                handoffText.innerHTML = `InterPag - ${alertId} - ${alertTitle} - ${formatDateBR(creationDate)} - ${handoff}`;
             } else {
-                // Geração dos textos padrão
-                whatsappText.innerHTML = `
-        Alerta: ${alertId}<br>
-        Descrição: ${alertTitle}<br>
-        Status: Aberto<br>
-        Início: ${formatDateBR(creationDate)}<br>
-        Acionamento TI: ${formatDateBR(currentDate)}<br><br>
-        Time Line:<br>
-        ${formatDateBR(creationDate)} - Identificado alerta.<br>
-        ${formatDateBR(monitorTime)} - Alerta em verificação pelo monitoramento.<br>
-        ${formatDateBR(currentDate)} - Acionamento time ${selectedClient}.<br><br>
-        Link do alerta: ${alertLink}
-    `;
                 let deliveryMethod = "Via Whatsapp e e-mail";
                 if (selectedClient === "FioTec") {
                     deliveryMethod = "Via Whatsapp";
@@ -348,10 +343,48 @@
                     selectedClient = "Octalink";
                 }
 
+                whatsappText.innerHTML = `
+            Alerta: ${alertId}<br>
+            Descrição: ${alertTitle}<br>
+            Status: Aberto<br>
+            Início: ${formatDateBR(creationDate)}<br>
+            Acionamento TI: ${formatDateBR(currentDate)}<br><br>
+            Time Line:<br>
+            ${formatDateBR(creationDate)} - Identificado alerta.<br>
+            ${formatDateBR(monitorTime)} - Alerta em verificação pelo monitoramento.<br>
+            ${formatDateBR(currentDate)} - Acionamento time ${selectedClient}.<br><br>
+            Link do alerta: ${alertLink}
+        `;
                 handoffText.innerHTML = `${selectedClient} - ${alertId} - ${alertTitle} - ${formatDateBR(creationDate)} - ${deliveryMethod}.`;
-                fadeTransition(inputScreen, resultScreen);
             }
         }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('incident-field').addEventListener('input', updateInterpagTexts);
+            document.getElementById('cause-selector').addEventListener('change', () => {
+                const causeField = document.getElementById('cause-field');
+                if (document.getElementById('cause-selector').value === 'custom') {
+                    causeField.classList.remove('hidden');
+                } else {
+                    causeField.classList.add('hidden');
+                    causeField.value = '';
+                }
+                updateInterpagTexts();
+            });
+            document.getElementById('cause-field').addEventListener('input', updateInterpagTexts);
+            document.getElementById('impact-selector').addEventListener('change', () => {
+                const impactField = document.getElementById('impact-field');
+                if (document.getElementById('impact-selector').value === 'custom') {
+                    impactField.classList.remove('hidden');
+                } else {
+                    impactField.classList.add('hidden');
+                    impactField.value = '';
+                }
+                updateInterpagTexts();
+            });
+            document.getElementById('impact-field').addEventListener('input', updateInterpagTexts);
+            document.getElementById('action-field').addEventListener('input', updateInterpagTexts);
+            document.getElementById('handoff-field').addEventListener('input', updateInterpagTexts);
+        });
 
         document.getElementById('copy-whatsapp').addEventListener('click', () => {
             copyButtonHandler(document.getElementById('copy-whatsapp'), whatsappText.innerText);
@@ -365,6 +398,7 @@
             alertInput.value = '';
             fadeTransition(resultScreen, inputScreen);
         });
+
         document.getElementById('cause-selector').addEventListener('change', (e) => {
             const causeField = document.getElementById('cause-field');
             if (e.target.value === 'custom') {
@@ -384,6 +418,67 @@
                 impactField.value = ''; // Limpa o campo de texto
             }
         });
+
+        // Função para atualizar os textos gerados dinamicamente
+        function updateInterpagTexts() {
+            const incident = document.getElementById('incident-field').value || 'N/A';
+            const causeSelectorValue = document.getElementById('cause-selector').value;
+            const cause = causeSelectorValue === 'custom'
+                ? document.getElementById('cause-field').value || 'N/A'
+                : causeSelectorValue;
+            const impactSelectorValue = document.getElementById('impact-selector').value;
+            const impact = impactSelectorValue === 'custom'
+                ? document.getElementById('impact-field').value || 'N/A'
+                : impactSelectorValue;
+            const action = document.getElementById('action-field').value || '...';
+            const handoff = document.getElementById('handoff-field').value || '...';
+
+            const alertTitle = globalAlertTitle;
+            const creationDate = globalCreationDate;
+            const currentDate = new Date();
+
+            whatsappText.innerHTML = `
+        Incidente: ${incident}<br>
+        Descrição: ${alertTitle}<br>
+        Status: Aberto<br>
+        Início: ${formatDateBR(creationDate)}<br>
+        Acionamento TI: ${formatDateBR(currentDate)}<br>
+        Causa: ${cause}<br>
+        Impacto: ${impact}<br><br>
+        Time Line:<br>
+        ${formatDateBR(creationDate)} - Identificado alerta.<br>
+        ${formatDateBR(currentDate)} - Acionado ${action}.<br>
+    `;
+            handoffText.innerHTML = `InterPag - ${incident} - ${alertTitle} - ${formatDateBR(creationDate)} - ${handoff}`;
+        }
+
+        // Adicionar event listeners
+        document.getElementById('incident-field').addEventListener('input', updateInterpagTexts);
+        document.getElementById('cause-selector').addEventListener('change', () => {
+            const causeField = document.getElementById('cause-field');
+            if (document.getElementById('cause-selector').value === 'custom') {
+                causeField.classList.remove('hidden');
+            } else {
+                causeField.classList.add('hidden');
+                causeField.value = '';
+            }
+            updateInterpagTexts();
+        });
+        document.getElementById('cause-field').addEventListener('input', updateInterpagTexts);
+        document.getElementById('impact-selector').addEventListener('change', () => {
+            const impactField = document.getElementById('impact-field');
+            if (document.getElementById('impact-selector').value === 'custom') {
+                impactField.classList.remove('hidden');
+            } else {
+                impactField.classList.add('hidden');
+                impactField.value = '';
+            }
+            updateInterpagTexts();
+        });
+        document.getElementById('impact-field').addEventListener('input', updateInterpagTexts);
+        document.getElementById('action-field').addEventListener('input', updateInterpagTexts);
+        document.getElementById('handoff-field').addEventListener('input', updateInterpagTexts);
+
     </script>
 </body>
 
