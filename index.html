@@ -1,443 +1,514 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Informes</title>
-    <link href="https://fonts.googleapis.com/css2?family=Aptos+Narrow:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            background-color: #1e1b29;
-            /* Roxo escuro */
-            color: white;
-            font-family: 'Aptos Narrow', sans-serif;
-            transition: opacity 0.3s ease-in-out;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gerador de Informes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Aptos+Narrow:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #1e1b29; /* Roxo escuro */
+      color: white;
+      font-family: 'Aptos Narrow', sans-serif;
+      transition: opacity 0.3s ease-in-out;
+    }
 
-        .btn {
-            background-color: #4ade80;
-            /* Verde */
-            color: #1e1b29;
-            /* Roxo escuro */
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+    .btn {
+      background-color: #4ade80; /* Verde */
+      color: #1e1b29; /* Roxo escuro */
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
 
-        .btn:hover {
-            background-color: #34d399;
-        }
+    .btn:hover {
+      background-color: #34d399;
+    }
 
-        .btn:active {
-            background-color: black;
-            color: white;
-        }
+    .btn:active {
+      background-color: black;
+      color: white;
+    }
 
-        #inicio-btn {
-            background-color: white;
-            color: black;
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: 2px solid #4ade80;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-        }
+    #inicio-btn {
+      background-color: white;
+      color: black;
+      padding: 10px 20px;
+      border-radius: 5px;
+      border: 2px solid #4ade80;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
 
-        #inicio-btn:hover {
-            background-color: #4ade80;
-            color: white;
-        }
+    #inicio-btn:hover {
+      background-color: #4ade80;
+      color: white;
+    }
 
-        .error {
-            color: #ef4444;
-            /* Vermelho */
-            font-weight: bold;
-        }
+    .error {
+      color: #ef4444; /* Vermelho */
+      font-weight: bold;
+    }
 
-        .active {
-            text-decoration: underline;
-            text-decoration-thickness: 2px;
-        }
+    .active {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+    }
 
-        @keyframes blink {
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
 
-            0%,
-            100% {
-                opacity: 1;
-            }
+    .result-screen {
+      max-width: 70%;
+      margin: 0 auto;
+      font-size: 0.5rem;
+    }
 
-            50% {
-                opacity: 0;
-            }
-        }
+    h1.sticky {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      box-shadow: 0 2px 10px #4ade80;
+      border-radius: 30px;
+    }
 
-        .result-screen {
-            width: 85%;
-            font-size: 0.5rem;
-            margin: 0 auto;
-        }
+    img {
+      margin-top: 20px;
+    }
 
-        h1.sticky {
-            padding-top: 10px;
-            padding-bottom: 10px;
-            box-shadow: 0 2px 10px #4ade80;
-            border-radius: 30px;
-        }
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
 
-        img {
-            margin-top: 20px;
-        }
+    .fade-in {
+      opacity: 1;
+      transition: opacity 0.3s ease-in-out;
+    }
 
-        .fade-out {
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
-
-        .fade-in {
-            opacity: 1;
-            transition: opacity 0.3s ease-in-out;
-        }
-
-        textarea {
-            border: 0px;
-            border-radius: 15px;
-            font-size: 5px;
-            padding: 10px;
-        }
-    </style>
+    /* Ajustes para o textarea:
+       - Fonte de 8px
+       - Mais largo
+    */
+    textarea#alert-input {
+      font-size: 8px; /* Fonte menor */
+      border: 0px;
+      border-radius: 15px;
+      padding: 10px;
+      width: 90%; /* Mais largura */
+      height: 300px;
+    }
+  </style>
 </head>
 
 <body class="flex flex-col items-center justify-center min-h-screen">
-    <img src="logo.svg" alt="BW SOLUÇÕES" class="w-32 mx-auto mb-4">
-    <div id="app" class="text-center mt-20">
-        <div id="top">
-            <h1 id="title" class="text-4xl font-bold mb-6 sticky top-0 bg-[#1e1b29] z-10">Gerador de Informes</h1>
-        </div>
-
-        <div id="input-screen">
-            <h2 class="text-2xl font-semibold mb-4">Cole o código do alerta abaixo:</h2>
-            <textarea id="alert-input" class="w-4/6 md:w-5/6 h-60 p-4 bg-gray-800 text-gray-400 text-sm"
-                placeholder="Código-fonte HTML do alerta aqui."></textarea>
-            <div class="mt-4 flex justify-between w-5/6 mx-auto">
-                <button class="btn" id="process-button">Processar</button>
-            </div>
-            <div id="log" class="mt-4"></div>
-        </div>
-
-        <div id="result-screen" class="hidden">
-            <h2 class="text-2xl font-semibold mb-4">Textos Gerados</h2>
-            <!-- Campos adicionais para Interpag -->
-            <div id="interpag-fields" class="hidden">
-                <label>
-                    Incidente:
-                    <input type="text" id="incident-field" class="w-full p-2 mb-2 text-black"
-                        placeholder="Preencher à mão">
-                </label>
-                <label>
-                    Causa:
-                    <select id="cause-selector" class="w-full p-2 mb-2 text-black">
-                        <option value="Em análise.">Em análise.</option>
-                        <option value="custom">Escreva aqui</option>
-                    </select>
-                    <input type="text" id="cause-field" class="hidden w-full p-2 mt-1 text-black"
-                        placeholder="Preencher à mão">
-                </label>
-                <label>
-                    Impacto:
-                    <select id="impact-selector" class="w-full p-2 mb-2 text-black">
-                        <option value="Em análise.">Em análise.</option>
-                        <option value="custom">Escreva aqui</option>
-                    </select>
-                    <input type="text" id="impact-field" class="hidden w-full p-2 mt-1 text-black"
-                        placeholder="Preencher à mão">
-                </label>
-                <label>
-                    Acionamento:
-                    <input type="text" id="action-field" class="w-full p-2 mb-2 text-black"
-                        placeholder="Preencher à mão">
-                </label>
-                <label>
-                    Passagem:
-                    <input type="text" id="handoff-field" class="w-full p-2 mb-2 text-black"
-                        placeholder="Preencher à mão">
-                </label>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-gray-800 p-4 text-left text-white">
-                    <h3 class="font-bold text-center">WhatsApp:</h3>
-                    <div id="whatsapp-text" class="text-xs"></div>
-                    <button class="btn mt-4 mx-auto block" id="copy-whatsapp">Copiar WhatsApp</button>
-                </div>
-                <div class="bg-gray-800 p-4 text-left text-white">
-                    <h3 class="font-bold text-center">Passagem de Turno:</h3>
-                    <div id="handoff-text" class="text-xs"></div>
-                    <button class="btn mt-4 mx-auto block" id="copy-handoff">Copiar Passagem de Turno</button>
-                </div>
-            </div>
-            <button id="inicio-btn">Início</button>
-        </div>
+  <img src="logo.svg" alt="BW SOLUÇÕES" class="w-32 mx-auto mb-4" />
+  <div id="app" class="text-center mt-20">
+    <div id="top">
+      <h1 id="title" class="text-4xl font-bold mb-6 sticky top-0 bg-[#1e1b29] z-10">
+        Gerador de Informes
+      </h1>
     </div>
 
-    <script>
-        const app = document.getElementById('app');
-        const homeScreen = document.getElementById('home-screen');
-        const inputScreen = document.getElementById('input-screen');
-        const alertInput = document.getElementById('alert-input');
-        const resultScreen = document.getElementById('result-screen');
-        let selectedClient = null;
-        const log = document.getElementById('log');
-        const whatsappText = document.getElementById('whatsapp-text');
-        const handoffText = document.getElementById('handoff-text');
+    <div id="input-screen">
+      <h2 class="text-2xl font-semibold mb-4">Cole o código do alerta abaixo:</h2>
+      <textarea
+        id="alert-input"
+        class="bg-gray-800 text-gray-400 text-sm"
+        placeholder="Código-fonte HTML do alerta aqui."
+      ></textarea>
 
-        let globalAlertId = '';
-        let globalAlertTitle = '';
-        let globalCreationDate = null;
-        let globalAlertLink = '';
+      <!-- Para centralizar o botão, basta usar justify-center -->
+      <div class="mt-4 flex justify-center w-full">
+        <button class="btn" id="process-button">Processar</button>
+      </div>
+      <div id="log" class="mt-4"></div>
+    </div>
 
-        const copyButtonHandler = (button, textToCopy) => {
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                button.style.backgroundColor = 'black';
-                button.style.color = 'white';
-                button.innerText = 'Copiado!';
-                setTimeout(() => {
-                    button.style.backgroundColor = '#4ade80';
-                    button.style.color = '#1e1b29';
-                    button.innerText = 'Copiar novamente';
-                }, 2000); // Volta ao estado original após 2 segundos
-            });
-        };
+    <div id="result-screen" class="hidden">
+      <h2 class="text-2xl font-semibold mb-4">Textos Gerados</h2>
+      <!-- Campos adicionais para Interpag -->
+      <!-- Ajustes nos inputs: fundo cinza escuro, bordas arredondadas, largura menor -->
+      <div id="interpag-fields" class="hidden">
+        <label class="block mb-2">
+          Incidente:
+          <input
+            type="text"
+            id="incident-field"
+            class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2"
+            placeholder="Preencher à mão"
+          />
+        </label>
+        <label class="block mb-2">
+          Causa:
+          <select
+            id="cause-selector"
+            class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2"
+          >
+            <option value="Em análise.">Em análise.</option>
+            <option value="custom">Escreva aqui</option>
+          </select>
+          <input
+            type="text"
+            id="cause-field"
+            class="hidden bg-gray-700 text-white rounded-md p-2 w-72 mt-1"
+            placeholder="Preencher à mão"
+          />
+        </label>
+        <label class="block mb-2">
+          Impacto:
+          <select
+            id="impact-selector"
+            class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2"
+          >
+            <option value="Em análise.">Em análise.</option>
+            <option value="custom">Escreva aqui</option>
+          </select>
+          <input
+            type="text"
+            id="impact-field"
+            class="hidden bg-gray-700 text-white rounded-md p-2 w-72 mt-1"
+            placeholder="Preencher à mão"
+          />
+        </label>
+        <label class="block mb-2">
+          Acionamento:
+          <input
+            type="text"
+            id="action-field"
+            class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2"
+            placeholder="Preencher à mão"
+          />
+        </label>
+        <label class="block mb-2">
+          Passagem:
+          <input
+            type="text"
+            id="handoff-field"
+            class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2"
+            placeholder="Preencher à mão"
+          />
+        </label>
+      </div>
 
-        // Focar automaticamente no campo de input ao carregar a tela
-        document.addEventListener('DOMContentLoaded', () => {
-            alertInput.focus();
-        });
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-gray-800 p-4 text-left text-white">
+          <h3 class="font-bold text-center">WhatsApp:</h3>
+          <div id="whatsapp-text" class="text-xs"></div>
+          <button class="btn mt-4 mx-auto block" id="copy-whatsapp">
+            Copiar WhatsApp
+          </button>
+        </div>
+        <div class="bg-gray-800 p-4 text-left text-white">
+          <h3 class="font-bold text-center">Passagem de Turno:</h3>
+          <div id="handoff-text" class="text-xs"></div>
+          <button class="btn mt-4 mx-auto block" id="copy-handoff">
+            Copiar Passagem de Turno
+          </button>
+        </div>
+      </div>
+      <button id="inicio-btn">Início</button>
+    </div>
+  </div>
 
-        const formatDateBR = (date) => {
-                return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) +
-                    ' às ' +
-                    formatTimeToBR(date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
-        };
-        
-        document.getElementById('process-button').addEventListener('click', () => {
-            const htmlContent = alertInput.value.trim();
-            if (!htmlContent) {
-                log.innerHTML = '<p class="error">Hmmm, isso não me parece ser o código fonte do alerta.</p>';
-                return;
-            }
-            fadeTransition(inputScreen, resultScreen);
-            processAlert(htmlContent);
-        });
+  <script>
+    const app = document.getElementById('app');
+    const homeScreen = document.getElementById('home-screen');
+    const inputScreen = document.getElementById('input-screen');
+    const alertInput = document.getElementById('alert-input');
+    const resultScreen = document.getElementById('result-screen');
+    let selectedClient = null;
+    const log = document.getElementById('log');
+    const whatsappText = document.getElementById('whatsapp-text');
+    const handoffText = document.getElementById('handoff-text');
 
-        // Substitui ":" por "h"
-        function formatTimeToBR(time) {
-            return time.replace(/(\d{2}):(\d{2})/, "$1h$2");
-        }
+    let globalAlertId = '';
+    let globalAlertTitle = '';
+    let globalCreationDate = null;
+    let globalAlertLink = '';
 
-        // Adiciona a classe fade-out à tela atual
-        function fadeTransition(hideScreen, showScreen) {
-            hideScreen.classList.add('fade-out');
-            // Espera o tempo da transição para esconder completamente
-            setTimeout(() => {
-                hideScreen.classList.add('hidden'); // Esconde a tela
-                hideScreen.classList.remove('fade-out'); // Remove a classe fade-out
+    // Focar automaticamente no campo de input ao carregar a tela
+    document.addEventListener('DOMContentLoaded', () => {
+      alertInput.focus();
+    });
 
-                // Mostra a nova tela com a classe fade-in
-                showScreen.classList.remove('hidden');
-                showScreen.classList.add('fade-in');
+    // Função global para formatar horas
+    function formatTimeToBR(time) {
+      return time.replace(/(\d{2}):(\d{2})/, '$1h$2');
+    }
 
-                // Remove a classe fade-in após a transição
-                setTimeout(() => {
-                    showScreen.classList.remove('fade-in');
-                }, 300); // Tempo da transição definido no CSS
-            }, 300); // Tempo da transição definido no CSS
-        }
+    // Função global para formatar data
+    function formatDateBR(date) {
+      if (!(date instanceof Date) || isNaN(date)) {
+        return 'Data inválida';
+      }
+      return (
+        date.toLocaleDateString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        }) +
+        ' às ' +
+        formatTimeToBR(
+          date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        )
+      );
+    }
 
-        function processAlert(html) {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
+    // Botão Processar
+    document.getElementById('process-button').addEventListener('click', () => {
+      const htmlContent = alertInput.value.trim();
+      if (!htmlContent) {
+        log.innerHTML =
+          '<p class="error">Hmmm, isso não me parece ser o código fonte do alerta.</p>';
+        return;
+      }
+      fadeTransition(inputScreen, resultScreen);
+      processAlert(htmlContent);
+    });
 
-            // Capturar o ID do alerta
-            const alertId = Array.from(doc.querySelectorAll('.css-1gd7hga'))
-                .find(el => el.textContent.trim().match(/^#\d{4,}$/))?.textContent.trim() || 'N/A';
+    // Função de fade in/out entre telas
+    function fadeTransition(hideScreen, showScreen) {
+      hideScreen.classList.add('fade-out');
+      setTimeout(() => {
+        hideScreen.classList.add('hidden');
+        hideScreen.classList.remove('fade-out');
 
-            // Capturar o título do alerta
-            const alertTitle = Array.from(doc.querySelectorAll('*'))
-                .map(el => el.textContent.trim())
-                .find(text => text.startsWith('[Datadog]') || text.startsWith('Problem:') || text.startsWith('[Grafana]'))
-                ?.replace(/\[.*?\]|\(.*?\)/g, '').trim() || 'N/A';
+        showScreen.classList.remove('hidden');
+        showScreen.classList.add('fade-in');
 
-            // Capturar o horário de criação
-            const creationTime = Array.from(doc.querySelectorAll('.css-1qyz15l.e14danaq0'))
-                .find(el => el.textContent.trim().match(/\d{4}/))?.textContent.trim() || 'N/A';
+        setTimeout(() => {
+          showScreen.classList.remove('fade-in');
+        }, 300);
+      }, 300);
+    }
 
-            // Capturar o link do alerta
-            const alertLink = doc.querySelector('.css-1r2hmw5.e1p7aara2')?.textContent || 'N/A';
+    // Faz o parsing do código HTML colado e extrai dados
+    function processAlert(html) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
 
-            globalAlertId = alertId;
-            globalAlertTitle = alertTitle;
-            globalCreationDate = new Date(creationTime);
-            globalAlertLink = alertLink;
+      // Capturar o ID do alerta
+      const alertId =
+        Array.from(doc.querySelectorAll('.css-1gd7hga')).find((el) =>
+          el.textContent.trim().match(/^#\d{4,}$/)
+        )?.textContent.trim() || 'N/A';
 
-            // Identificar cliente
-            const clientClasses = Array.from(doc.querySelectorAll('.css-1qyz15l.e14danaq0'));
-            const keywords = ["FioTec", "BrasilTecpar", "ATEM", "Octalink", "Grafana Interpag", "Zabbix"];
-            selectedClient = clientClasses.map(el => el.textContent.trim())
-                .find(text => keywords.some(keyword => text.includes(keyword)));
+      // Capturar o título do alerta
+      const alertTitle =
+        Array.from(doc.querySelectorAll('*'))
+          .map((el) => el.textContent.trim())
+          .find(
+            (text) =>
+              text.startsWith('[Datadog]') ||
+              text.startsWith('Problem:') ||
+              text.startsWith('[Grafana]')
+          )
+          ?.replace(/\[.*?\]|\(.*?\)/g, '')
+          .trim() || 'N/A';
 
-            if (selectedClient === "Grafana Interpag" || selectedClient === "Zabbix") {
-                selectedClient = "Interpag";
-            } else if (selectedClient === "Octalink") {
-                selectedClient = "BW Soluções";
-            }
+      // Capturar o horário de criação
+      const creationTime =
+        Array.from(doc.querySelectorAll('.css-1qyz15l.e14danaq0')).find((el) =>
+          el.textContent.trim().match(/\d{4}/)
+        )?.textContent.trim() || 'N/A';
 
-            // Configurar campos para Interpag
-            if (selectedClient === "Interpag") {
-                document.getElementById('interpag-fields').classList.remove('hidden');
-                updateInterpagTexts();
-            } else {
-                document.getElementById('interpag-fields').classList.add('hidden');
-            }
+      // Capturar o link do alerta
+      const alertLink =
+        doc.querySelector('.css-1r2hmw5.e1p7aara2')?.textContent || 'N/A';
 
-            const creationDate = new Date(creationTime);
-            const currentDate = new Date();
+      // Guardar em variáveis globais
+      globalAlertId = alertId;
+      globalAlertTitle = alertTitle;
+      globalCreationDate = new Date(creationTime);
+      globalAlertLink = alertLink;
 
-            // Ajustar monitorTime
-            let monitorTime = new Date(creationDate.getTime() + 3 * 60000); // Somar 3 minutos
-            if (monitorTime > currentDate) {
-                monitorTime = new Date(currentDate.getTime() - 1 * 60000); // Ajustar para 1 minuto antes da hora atual
-            }
+      // Identificar cliente
+      const clientClasses = Array.from(doc.querySelectorAll('.css-1qyz15l.e14danaq0'));
+      const keywords = [
+        'FioTec',
+        'BrasilTecpar',
+        'ATEM',
+        'Octalink',
+        'Grafana Interpag',
+        'Zabbix',
+      ];
 
-            if (selectedClient === "Interpag") {
-                const incident = document.getElementById('incident-field').value || 'N/A';
-                const cause = document.getElementById('cause-selector').value === 'custom'
-                    ? document.getElementById('cause-field').value
-                    : document.getElementById('cause-selector').value;
-                const impact = document.getElementById('impact-selector').value === 'custom'
-                    ? document.getElementById('impact-field').value
-                    : document.getElementById('impact-selector').value;
-                const action = document.getElementById('action-field').value || '...';
-                const handoff = document.getElementById('handoff-field').value || '...';
+      selectedClient = clientClasses
+        .map((el) => el.textContent.trim())
+        .find((text) => keywords.some((keyword) => text.includes(keyword)));
 
-                whatsappText.innerHTML = `
-            Incidente: ${incident}<br>
-            Descrição: ${alertTitle}<br>
-            Status: Aberto<br>
-            Início: ${formatDateBR(creationDate)}<br>
-            Acionamento TI: ${formatDateBR(currentDate)}<br>
-            Causa: ${cause}<br>
-            Impacto: ${impact}<br><br>
-            Time Line:<br>
-            ${formatDateBR(creationDate)} - Identificado alerta.<br>
-            ${formatDateBR(currentDate)} - Acionado ${action}.<br>
+      if (selectedClient === 'Grafana Interpag' || selectedClient === 'Zabbix') {
+        selectedClient = 'Interpag';
+      } else if (selectedClient === 'Octalink') {
+        selectedClient = 'BW Soluções';
+      }
+
+      // Exibe/esconde campos do fluxo Interpag
+      if (selectedClient === 'Interpag') {
+        document.getElementById('interpag-fields').classList.remove('hidden');
+        updateInterpagTexts(); // Gera texto inicial
+      } else {
+        document.getElementById('interpag-fields').classList.add('hidden');
+      }
+
+      // Exemplo de conteúdo inicial (para outros clientes)
+      const creationDate = new Date(creationTime);
+      const currentDate = new Date();
+
+      // Ajustar monitorTime
+      let monitorTime = new Date(creationDate.getTime() + 3 * 60000);
+      if (monitorTime > currentDate) {
+        monitorTime = new Date(currentDate.getTime() - 1 * 60000);
+      }
+
+      if (selectedClient === 'Interpag') {
+        // Monta texto inicial para Interpag (sem inputs preenchidos)
+        const incident = document.getElementById('incident-field').value || 'N/A';
+        const cause =
+          document.getElementById('cause-selector').value === 'custom'
+            ? document.getElementById('cause-field').value
+            : document.getElementById('cause-selector').value;
+        const impact =
+          document.getElementById('impact-selector').value === 'custom'
+            ? document.getElementById('impact-field').value
+            : document.getElementById('impact-selector').value;
+        const action =
+          document.getElementById('action-field').value || '...';
+        const handoff =
+          document.getElementById('handoff-field').value || '...';
+
+        whatsappText.innerHTML = `
+          Incidente: ${incident}<br>
+          Descrição: ${alertTitle}<br>
+          Status: Aberto<br>
+          Início: ${formatDateBR(creationDate)}<br>
+          Acionamento TI: ${formatDateBR(currentDate)}<br>
+          Causa: ${cause}<br>
+          Impacto: ${impact}<br><br>
+          Time Line:<br>
+          ${formatDateBR(creationDate)} - Identificado alerta.<br>
+          ${formatDateBR(currentDate)} - Acionado ${action}.<br>
         `;
-                handoffText.innerHTML = `InterPag - ${alertId} - ${alertTitle} - ${formatDateBR(creationDate)} - ${handoff}`;
-            } else {
-                let deliveryMethod = "Via Whatsapp e e-mail";
-                if (selectedClient === "FioTec") {
-                    deliveryMethod = "Via Whatsapp";
-                } else if (selectedClient === "BW Soluções") {
-                    deliveryMethod = "Via Teams";
-                    selectedClient = "Octalink";
-                }
-
-                whatsappText.innerHTML = `
-            Alerta: ${alertId}<br>
-            Descrição: ${alertTitle}<br>
-            Status: Aberto<br>
-            Início: ${formatDateBR(creationDate)}<br>
-            Acionamento TI: ${formatDateBR(currentDate)}<br><br>
-            Time Line:<br>
-            ${formatDateBR(creationDate)} - Identificado alerta.<br>
-            ${formatDateBR(monitorTime)} - Alerta em verificação pelo monitoramento.<br>
-            ${formatDateBR(currentDate)} - Acionamento time ${selectedClient}.<br><br>
-            Link do alerta: ${alertLink}
-        `;
-                handoffText.innerHTML = `${selectedClient} - ${alertId} - ${alertTitle} - ${formatDateBR(creationDate)} - ${deliveryMethod}.`;
-            }
+        handoffText.innerHTML = `InterPag - ${alertId} - ${alertTitle} - ${formatDateBR(
+          creationDate
+        )} - ${handoff}`;
+      } else {
+        let deliveryMethod = 'Via Whatsapp e e-mail';
+        if (selectedClient === 'FioTec') {
+          deliveryMethod = 'Via Whatsapp';
+        } else if (selectedClient === 'BW Soluções') {
+          deliveryMethod = 'Via Teams';
+          selectedClient = 'Octalink';
         }
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('incident-field').addEventListener('input', updateInterpagTexts);
-            document.getElementById('cause-selector').addEventListener('change', () => {
-                const causeField = document.getElementById('cause-field');
-                if (document.getElementById('cause-selector').value === 'custom') {
-                    causeField.classList.remove('hidden');
-                } else {
-                    causeField.classList.add('hidden');
-                    causeField.value = '';
-                }
-                updateInterpagTexts();
-            });
-            document.getElementById('cause-field').addEventListener('input', updateInterpagTexts);
-            document.getElementById('impact-selector').addEventListener('change', () => {
-                const impactField = document.getElementById('impact-field');
-                if (document.getElementById('impact-selector').value === 'custom') {
-                    impactField.classList.remove('hidden');
-                } else {
-                    impactField.classList.add('hidden');
-                    impactField.value = '';
-                }
-                updateInterpagTexts();
-            });
-            document.getElementById('impact-field').addEventListener('input', updateInterpagTexts);
-            document.getElementById('action-field').addEventListener('input', updateInterpagTexts);
-            document.getElementById('handoff-field').addEventListener('input', updateInterpagTexts);
-        });
 
-        document.getElementById('copy-whatsapp').addEventListener('click', () => {
-            copyButtonHandler(document.getElementById('copy-whatsapp'), whatsappText.innerText);
-        });
+        whatsappText.innerHTML = `
+          Alerta: ${alertId}<br>
+          Descrição: ${alertTitle}<br>
+          Status: Aberto<br>
+          Início: ${formatDateBR(creationDate)}<br>
+          Acionamento TI: ${formatDateBR(currentDate)}<br><br>
+          Time Line:<br>
+          ${formatDateBR(creationDate)} - Identificado alerta.<br>
+          ${formatDateBR(monitorTime)} - Alerta em verificação pelo monitoramento.<br>
+          ${formatDateBR(currentDate)} - Acionamento time ${selectedClient}.<br><br>
+          Link do alerta: ${alertLink}
+        `;
+        handoffText.innerHTML = `${selectedClient} - ${alertId} - ${alertTitle} - ${formatDateBR(
+          creationDate
+        )} - ${deliveryMethod}.`;
+      }
+    }
 
-        document.getElementById('copy-handoff').addEventListener('click', () => {
-            copyButtonHandler(document.getElementById('copy-handoff'), handoffText.innerText);
-        });
+    // Copiar texto do WhatsApp
+    document
+      .getElementById('copy-whatsapp')
+      .addEventListener('click', () => {
+        copyButtonHandler(document.getElementById('copy-whatsapp'), whatsappText.innerText);
+      });
 
-        document.getElementById('inicio-btn').addEventListener('click', () => {
-            alertInput.value = '';
-            fadeTransition(resultScreen, inputScreen);
-        });
+    // Copiar texto da Passagem de Turno
+    document
+      .getElementById('copy-handoff')
+      .addEventListener('click', () => {
+        copyButtonHandler(document.getElementById('copy-handoff'), handoffText.innerText);
+      });
 
-        document.getElementById('cause-selector').addEventListener('change', (e) => {
-            const causeField = document.getElementById('cause-field');
-            if (e.target.value === 'custom') {
-                causeField.classList.remove('hidden');
-            } else {
-                causeField.classList.add('hidden');
-                causeField.value = ''; // Limpa o campo de texto
-            }
-        });
+    // Voltar ao início
+    document.getElementById('inicio-btn').addEventListener('click', () => {
+      alertInput.value = '';
+      fadeTransition(resultScreen, inputScreen);
+    });
 
-        document.getElementById('impact-selector').addEventListener('change', (e) => {
-            const impactField = document.getElementById('impact-field');
-            if (e.target.value === 'custom') {
-                impactField.classList.remove('hidden');
-            } else {
-                impactField.classList.add('hidden');
-                impactField.value = ''; // Limpa o campo de texto
-            }
-        });
+    // Handler de cópia
+    function copyButtonHandler(button, textToCopy) {
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        button.style.backgroundColor = 'black';
+        button.style.color = 'white';
+        button.innerText = 'Copiado!';
+        setTimeout(() => {
+          button.style.backgroundColor = '#4ade80';
+          button.style.color = '#1e1b29';
+          button.innerText = 'Copiar novamente';
+        }, 2000);
+      });
+    }
 
-        // Função para atualizar os textos gerados dinamicamente
-        function updateInterpagTexts() {
-            const incident = document.getElementById('incident-field').value || 'N/A';
-            const causeSelectorValue = document.getElementById('cause-selector').value;
-            const cause = causeSelectorValue === 'custom'
-                ? document.getElementById('cause-field').value || 'N/A'
-                : causeSelectorValue;
-            const impactSelectorValue = document.getElementById('impact-selector').value;
-            const impact = impactSelectorValue === 'custom'
-                ? document.getElementById('impact-field').value || 'N/A'
-                : impactSelectorValue;
-            const action = document.getElementById('action-field').value || '...';
-            const handoff = document.getElementById('handoff-field').value || '...';
+    // Observadores de mudança nos campos do fluxo Interpag
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('incident-field').addEventListener('input', updateInterpagTexts);
+      document.getElementById('cause-selector').addEventListener('change', () => {
+        const causeField = document.getElementById('cause-field');
+        if (document.getElementById('cause-selector').value === 'custom') {
+          causeField.classList.remove('hidden');
+        } else {
+          causeField.classList.add('hidden');
+          causeField.value = '';
+        }
+        updateInterpagTexts();
+      });
+      document.getElementById('cause-field').addEventListener('input', updateInterpagTexts);
 
-            const alertTitle = globalAlertTitle;
-            const creationDate = globalCreationDate;
-            const currentDate = new Date();
+      document.getElementById('impact-selector').addEventListener('change', () => {
+        const impactField = document.getElementById('impact-field');
+        if (document.getElementById('impact-selector').value === 'custom') {
+          impactField.classList.remove('hidden');
+        } else {
+          impactField.classList.add('hidden');
+          impactField.value = '';
+        }
+        updateInterpagTexts();
+      });
+      document.getElementById('impact-field').addEventListener('input', updateInterpagTexts);
+      document.getElementById('action-field').addEventListener('input', updateInterpagTexts);
+      document.getElementById('handoff-field').addEventListener('input', updateInterpagTexts);
+    });
 
-            whatsappText.innerHTML = `
+    // Função para atualizar os textos gerados dinamicamente (Interpag)
+    function updateInterpagTexts() {
+      const incident = document.getElementById('incident-field').value || 'N/A';
+      const causeSelectorValue = document.getElementById('cause-selector').value;
+      const cause =
+        causeSelectorValue === 'custom'
+          ? document.getElementById('cause-field').value || 'N/A'
+          : causeSelectorValue;
+      const impactSelectorValue = document.getElementById('impact-selector').value;
+      const impact =
+        impactSelectorValue === 'custom'
+          ? document.getElementById('impact-field').value || 'N/A'
+          : impactSelectorValue;
+      const action = document.getElementById('action-field').value || '...';
+      const handoff = document.getElementById('handoff-field').value || '...';
+
+      const alertTitle = globalAlertTitle;
+      const creationDate = globalCreationDate;
+      const currentDate = new Date();
+
+      // Atualiza WhatsApp
+      whatsappText.innerHTML = `
         Incidente: ${incident}<br>
         Descrição: ${alertTitle}<br>
         Status: Aberto<br>
@@ -448,38 +519,13 @@
         Time Line:<br>
         ${formatDateBR(creationDate)} - Identificado alerta.<br>
         ${formatDateBR(currentDate)} - Acionado ${action}.<br>
-    `;
-            handoffText.innerHTML = `InterPag - ${incident} - ${alertTitle} - ${formatDateBR(creationDate)} - ${handoff}`;
-        }
+      `;
 
-        // Adicionar event listeners
-        document.getElementById('incident-field').addEventListener('input', updateInterpagTexts);
-        document.getElementById('cause-selector').addEventListener('change', () => {
-            const causeField = document.getElementById('cause-field');
-            if (document.getElementById('cause-selector').value === 'custom') {
-                causeField.classList.remove('hidden');
-            } else {
-                causeField.classList.add('hidden');
-                causeField.value = '';
-            }
-            updateInterpagTexts();
-        });
-        document.getElementById('cause-field').addEventListener('input', updateInterpagTexts);
-        document.getElementById('impact-selector').addEventListener('change', () => {
-            const impactField = document.getElementById('impact-field');
-            if (document.getElementById('impact-selector').value === 'custom') {
-                impactField.classList.remove('hidden');
-            } else {
-                impactField.classList.add('hidden');
-                impactField.value = '';
-            }
-            updateInterpagTexts();
-        });
-        document.getElementById('impact-field').addEventListener('input', updateInterpagTexts);
-        document.getElementById('action-field').addEventListener('input', updateInterpagTexts);
-        document.getElementById('handoff-field').addEventListener('input', updateInterpagTexts);
-
-    </script>
+      // Atualiza Passagem de Turno
+      handoffText.innerHTML = `
+        InterPag - ${incident} - ${alertTitle} - ${formatDateBR(creationDate)} - ${handoff}
+      `;
+    }
+  </script>
 </body>
-
 </html>
