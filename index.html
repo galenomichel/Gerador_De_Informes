@@ -180,15 +180,6 @@
             placeholder="Preencher à mão"
           />
         </label>
-        <label class="block mb-2">
-          Passagem:
-          <input
-            type="text"
-            id="handoff-field"
-            class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2"
-            placeholder="Preencher à mão"
-          />
-        </label>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -373,10 +364,7 @@
           document.getElementById('impact-selector').value === 'custom'
             ? document.getElementById('impact-field').value
             : document.getElementById('impact-selector').value;
-        const action =
-          document.getElementById('action-field').value || '...';
-        const handoff =
-          document.getElementById('handoff-field').value || '...';
+        const action = document.getElementById('action-field').value || '...';
 
         whatsappText.innerHTML = `
           Incidente: STI-${incident}<br>
@@ -481,7 +469,6 @@
       });
       document.getElementById('impact-field').addEventListener('input', updateInterpagTexts);
       document.getElementById('action-field').addEventListener('input', updateInterpagTexts);
-      document.getElementById('handoff-field').addEventListener('input', updateInterpagTexts);
     });
 
     // Função para atualizar os textos gerados dinamicamente (Interpag)
@@ -498,7 +485,6 @@
           ? document.getElementById('impact-field').value || 'N/A'
           : impactSelectorValue;
       const action = document.getElementById('action-field').value || '...';
-      const handoff = document.getElementById('handoff-field').value || '...';
 
       const alertTitle = globalAlertTitle;
       const creationDate = globalCreationDate;
@@ -520,7 +506,7 @@
 
       // Atualiza Passagem de Turno
       handoffText.innerHTML = `
-        InterPag - STI-${incident} - ${alertTitle} - ${formatDateBR(creationDate)} - ${handoff}
+        InterPag - STI-${incident} - ${alertTitle} - ${formatDateBR(creationDate)} - ${action};
       `;
     }
   </script>
