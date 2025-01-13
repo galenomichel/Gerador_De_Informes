@@ -89,17 +89,18 @@
       transition: opacity 0.3s ease-in-out;
     }
 
-    /* Ajustes para o textarea:
-       - Fonte de 8px
-       - Mais largo
-    */
     textarea#alert-input {
-      font-size: 8px; /* Fonte menor */
-      border: 0px;
-      border-radius: 15px;
-      padding: 10px;
-      width: 90%; /* Mais largura */
+      width: 90%;
       height: 300px;
+      border-radius: 15px;
+      border: 0;
+      font-size: 8px; 
+      padding: 10px;
+      color: #ccc; /* Cor do texto */
+    }
+    textarea#alert-input::placeholder {
+      font-size: 14px; 
+      color: #888;
     }
   </style>
 </head>
@@ -120,8 +121,6 @@
         class="bg-gray-800 text-gray-400 text-sm"
         placeholder="Código-fonte HTML do alerta aqui."
       ></textarea>
-
-      <!-- Para centralizar o botão, basta usar justify-center -->
       <div class="mt-4 flex justify-center w-full">
         <button class="btn" id="process-button">Processar</button>
       </div>
@@ -130,11 +129,9 @@
 
     <div id="result-screen" class="hidden">
       <h2 class="text-2xl font-semibold mb-4">Textos Gerados</h2>
-      <!-- Campos adicionais para Interpag -->
-      <!-- Ajustes nos inputs: fundo cinza escuro, bordas arredondadas, largura menor -->
       <div id="interpag-fields" class="hidden">
         <label class="block mb-2">
-          Incidente:
+          Incidente - STI:
           <input
             type="text"
             id="incident-field"
@@ -382,7 +379,7 @@
           document.getElementById('handoff-field').value || '...';
 
         whatsappText.innerHTML = `
-          Incidente: ${incident}<br>
+          Incidente: STI-${incident}<br>
           Descrição: ${alertTitle}<br>
           Status: Aberto<br>
           Início: ${formatDateBR(creationDate)}<br>
@@ -390,8 +387,8 @@
           Causa: ${cause}<br>
           Impacto: ${impact}<br><br>
           Time Line:<br>
-          ${formatDateBR(creationDate)} - Identificado alerta.<br>
-          ${formatDateBR(currentDate)} - Acionado ${action}.<br>
+          ${formatDateBR(creationDate)} - Identificado alerta;<br>
+          ${formatDateBR(currentDate)} - Acionado ${action};<br>
         `;
         handoffText.innerHTML = `InterPag - ${alertId} - ${alertTitle} - ${formatDateBR(
           creationDate
@@ -412,9 +409,9 @@
           Início: ${formatDateBR(creationDate)}<br>
           Acionamento TI: ${formatDateBR(currentDate)}<br><br>
           Time Line:<br>
-          ${formatDateBR(creationDate)} - Identificado alerta.<br>
-          ${formatDateBR(monitorTime)} - Alerta em verificação pelo monitoramento.<br>
-          ${formatDateBR(currentDate)} - Acionamento time ${selectedClient}.<br><br>
+          ${formatDateBR(creationDate)} - Identificado alerta;<br>
+          ${formatDateBR(monitorTime)} - Alerta em verificação pelo monitoramento;<br>
+          ${formatDateBR(currentDate)} - Acionamento time ${selectedClient};<br><br>
           Link do alerta: ${alertLink}
         `;
         handoffText.innerHTML = `${selectedClient} - ${alertId} - ${alertTitle} - ${formatDateBR(
@@ -509,7 +506,7 @@
 
       // Atualiza WhatsApp
       whatsappText.innerHTML = `
-        Incidente: ${incident}<br>
+        Incidente: STI-${incident}<br>
         Descrição: ${alertTitle}<br>
         Status: Aberto<br>
         Início: ${formatDateBR(creationDate)}<br>
@@ -517,13 +514,13 @@
         Causa: ${cause}<br>
         Impacto: ${impact}<br><br>
         Time Line:<br>
-        ${formatDateBR(creationDate)} - Identificado alerta.<br>
-        ${formatDateBR(currentDate)} - Acionado ${action}.<br>
+        ${formatDateBR(creationDate)} - Identificado alerta;<br>
+        ${formatDateBR(currentDate)} - Acionado ${action};<br>
       `;
 
       // Atualiza Passagem de Turno
       handoffText.innerHTML = `
-        InterPag - ${incident} - ${alertTitle} - ${formatDateBR(creationDate)} - ${handoff}
+        InterPag - STI-${incident} - ${alertTitle} - ${formatDateBR(creationDate)} - ${handoff}
       `;
     }
   </script>
