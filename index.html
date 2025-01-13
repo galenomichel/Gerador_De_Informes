@@ -122,8 +122,8 @@
 
 <body class="flex flex-col items-center justify-center min-h-screen">
   <img src="logo.svg" alt="BW SOLUÇÕES" class="w-32 mx-auto mb-4" />
-  <div id="app" class="text-center mt-20">
-    <div class="w-full max-w-4xl mx-auto">
+  <div id="app" class="text-center mt-20 w-full max-w-4xl mx-auto">
+    <div class="w-full max-w-2xl mx-auto">
       <h1 id="top" class="text-4xl font-bold mb-6 sticky top-0 bg-[#1e1b29] z-10 text-center">
         Gerador de Informes
       </h1>
@@ -140,36 +140,68 @@
     </div>
 
     <div id="result-screen" class="hidden">
-      <div id="interpag-fields" class="hidden flex flex-col items-center justify-center">
-        <label class="block mb-2">
-          Incidente - STI:
-          <input type="text" id="incident-field" class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2"
-            placeholder="Preencher à mão" />
+      <div id="interpag-fields" class="hidden flex flex-col items-center mb-6 mx-auto">
+        <!-- Incidente -->
+        <label class="flex items-center justify-between mb-2 w-[20rem]">
+          <span class="mr-2">Incidente - STI:</span>
+          <input
+            type="text"
+            id="incident-field"
+            class="bg-gray-700 text-white rounded-md p-2 w-48"
+            placeholder="Preencher à mão"
+          />
         </label>
-        <label class="block mb-2">
-          Causa:
-          <select id="cause-selector" class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2">
+        
+        <!-- Causa -->
+        <label class="flex items-center justify-between mb-2 w-[20rem]">
+          <span class="mr-2">Causa:</span>
+          <select
+            id="cause-selector"
+            class="bg-gray-700 text-white rounded-md p-2 w-48"
+          >
             <option value="Em análise.">Em análise.</option>
             <option value="custom">Escreva aqui</option>
           </select>
-          <input type="text" id="cause-field" class="hidden bg-gray-700 text-white rounded-md p-2 w-72 mt-1"
-            placeholder="Preencher à mão" />
         </label>
-        <label class="block mb-2">
-          Impacto:
-          <select id="impact-selector" class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2">
+        <!-- Campo de texto da causa customizada -->
+        <input
+          type="text"
+          id="cause-field"
+          class="hidden bg-gray-700 text-white rounded-md p-2 w-[18rem] mb-2"
+          placeholder="Preencher à mão"
+        />
+      
+        <!-- Impacto -->
+        <label class="flex items-center justify-between mb-2 w-[20rem]">
+          <span class="mr-2">Impacto:</span>
+          <select
+            id="impact-selector"
+            class="bg-gray-700 text-white rounded-md p-2 w-48"
+          >
             <option value="Em análise.">Em análise.</option>
             <option value="custom">Escreva aqui</option>
           </select>
-          <input type="text" id="impact-field" class="hidden bg-gray-700 text-white rounded-md p-2 w-72 mt-1"
-            placeholder="Preencher à mão" />
         </label>
-        <label class="block mb-2">
-          Acionamento:
-          <input type="text" id="action-field" class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2"
-            placeholder="Preencher à mão" />
+        <!-- Campo de texto do impacto customizado -->
+        <input
+          type="text"
+          id="impact-field"
+          class="hidden bg-gray-700 text-white rounded-md p-2 w-[18rem] mb-2"
+          placeholder="Preencher à mão"
+        />
+      
+        <!-- Acionamento -->
+        <label class="flex items-center justify-between mb-2 w-[20rem]">
+          <span class="mr-2">Acionamento:</span>
+          <input
+            type="text"
+            id="action-field"
+            class="bg-gray-700 text-white rounded-md p-2 w-48"
+            placeholder="Preencher à mão"
+          />
         </label>
       </div>
+      
 
       <h2 class="text-2xl font-semibold mb-4">Textos Gerados</h2>
 
@@ -419,6 +451,13 @@
     // Voltar ao início
     document.getElementById('inicio-btn').addEventListener('click', () => {
       alertInput.value = '';
+      // limpa todos os campos da Interpag
+      document.getElementById('incident-field').value = '';
+      document.getElementById('cause-selector').value = 'Em análise.';
+      document.getElementById('impact-selector').value = 'Em análise.';
+      document.getElementById('cause-field').value = '';
+      document.getElementById('impact-field').value = '';
+      document.getElementById('action-field').value = '';
       fadeTransition(resultScreen, inputScreen);
     });
 
