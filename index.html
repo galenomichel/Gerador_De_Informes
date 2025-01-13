@@ -367,15 +367,6 @@
         document.getElementById('interpag-fields').classList.add('hidden');
       }
 
-      // Exemplo de conteúdo inicial (para outros clientes)
-      const creationDate = new Date(creationTime);
-      const currentDate = new Date();
-
-      // Ajustar monitorTime
-      let monitorTime = new Date(creationDate.getTime() + 3 * 60000);
-      if (monitorTime > currentDate) {
-        monitorTime = new Date(currentDate.getTime() - 1 * 60000);
-      }
 
       if (selectedClient === 'Interpag') {
         // Monta texto inicial para Interpag (sem inputs preenchidos)
