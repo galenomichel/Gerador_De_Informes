@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gerador de Informes</title>
   <link href="https://fonts.googleapis.com/css2?family=Aptos+Narrow:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      background-color: #1e1b29; /* Roxo escuro */
+      background-color: #1e1b29;
+      /* Roxo escuro */
       color: white;
       font-family: 'Aptos Narrow', sans-serif;
       transition: opacity 0.3s ease-in-out;
     }
 
     .btn {
-      background-color: #4ade80; /* Verde */
-      color: #1e1b29; /* Roxo escuro */
+      background-color: #4ade80;
+      /* Verde */
+      color: #1e1b29;
+      /* Roxo escuro */
       padding: 10px 20px;
       border-radius: 5px;
       cursor: pointer;
@@ -50,7 +54,8 @@
     }
 
     .error {
-      color: #ef4444; /* Vermelho */
+      color: #ef4444;
+      /* Vermelho */
       font-weight: bold;
     }
 
@@ -60,8 +65,15 @@
     }
 
     @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
     }
 
     .result-screen {
@@ -95,12 +107,14 @@
       height: 300px;
       border-radius: 15px;
       border: 0;
-      font-size: 8px; 
+      font-size: 8px;
       padding: 10px;
-      color: #ccc; /* Cor do texto */
+      color: #ccc;
+      /* Cor do texto */
     }
+
     textarea#alert-input::placeholder {
-      font-size: 14px; 
+      font-size: 14px;
       color: #888;
     }
   </style>
@@ -109,19 +123,16 @@
 <body class="flex flex-col items-center justify-center min-h-screen">
   <img src="logo.svg" alt="BW SOLUÇÕES" class="w-32 mx-auto mb-4" />
   <div id="app" class="text-center mt-20">
-    <div id="top">
-      <h1 id="title" class="text-4xl font-bold mb-6 sticky top-0 bg-[#1e1b29] z-10">
+    <div class="w-full max-w-4xl mx-auto">
+      <h1 id="top" class="text-4xl font-bold mb-6 sticky top-0 bg-[#1e1b29] z-10 text-center">
         Gerador de Informes
       </h1>
     </div>
 
     <div id="input-screen">
       <h2 class="text-2xl font-semibold mb-4">Cole o código do alerta abaixo:</h2>
-      <textarea
-        id="alert-input"
-        class="bg-gray-800 text-gray-400 text-sm"
-        placeholder="Código-fonte HTML do alerta aqui."
-      ></textarea>
+      <textarea id="alert-input" class="bg-gray-800 text-gray-400 text-sm"
+        placeholder="Código-fonte HTML do alerta aqui."></textarea>
       <div class="mt-4 flex justify-center w-full">
         <button class="btn" id="process-button">Processar</button>
       </div>
@@ -129,59 +140,38 @@
     </div>
 
     <div id="result-screen" class="hidden">
-      <h2 class="text-2xl font-semibold mb-4">Textos Gerados</h2>
       <div id="interpag-fields" class="hidden flex flex-col items-center justify-center">
         <label class="block mb-2">
           Incidente - STI:
-          <input
-            type="text"
-            id="incident-field"
-            class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2"
-            placeholder="Preencher à mão"
-          />
+          <input type="text" id="incident-field" class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2"
+            placeholder="Preencher à mão" />
         </label>
         <label class="block mb-2">
           Causa:
-          <select
-            id="cause-selector"
-            class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2"
-          >
+          <select id="cause-selector" class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2">
             <option value="Em análise.">Em análise.</option>
             <option value="custom">Escreva aqui</option>
           </select>
-          <input
-            type="text"
-            id="cause-field"
-            class="hidden bg-gray-700 text-white rounded-md p-2 w-72 mt-1"
-            placeholder="Preencher à mão"
-          />
+          <input type="text" id="cause-field" class="hidden bg-gray-700 text-white rounded-md p-2 w-72 mt-1"
+            placeholder="Preencher à mão" />
         </label>
         <label class="block mb-2">
           Impacto:
-          <select
-            id="impact-selector"
-            class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2"
-          >
+          <select id="impact-selector" class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2">
             <option value="Em análise.">Em análise.</option>
             <option value="custom">Escreva aqui</option>
           </select>
-          <input
-            type="text"
-            id="impact-field"
-            class="hidden bg-gray-700 text-white rounded-md p-2 w-72 mt-1"
-            placeholder="Preencher à mão"
-          />
+          <input type="text" id="impact-field" class="hidden bg-gray-700 text-white rounded-md p-2 w-72 mt-1"
+            placeholder="Preencher à mão" />
         </label>
         <label class="block mb-2">
           Acionamento:
-          <input
-            type="text"
-            id="action-field"
-            class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2"
-            placeholder="Preencher à mão"
-          />
+          <input type="text" id="action-field" class="bg-gray-700 text-white rounded-md p-2 w-72 mb-2"
+            placeholder="Preencher à mão" />
         </label>
       </div>
+
+      <h2 class="text-2xl font-semibold mb-4">Textos Gerados</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="bg-gray-800 p-4 text-left text-white">
@@ -340,6 +330,9 @@
       if (selectedClient === 'Interpag') {
         document.getElementById('interpag-fields').classList.remove('hidden');
         updateInterpagTexts(); // Gera texto inicial
+        setTimeout(() => {
+          document.getElementById('incident-field').focus();
+        }, 400);
       } else {
         document.getElementById('interpag-fields').classList.add('hidden');
       }
@@ -512,4 +505,5 @@
     }
   </script>
 </body>
+
 </html>
